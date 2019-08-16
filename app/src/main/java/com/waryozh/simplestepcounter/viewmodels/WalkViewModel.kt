@@ -44,8 +44,8 @@ class WalkViewModel : ViewModel() {
 
         repository.setOnStepCounterServiceRunningListener { isRunning ->
             _serviceRunning.value = isRunning
-            _startButtonEnabled.value = !isRunning
-            _stopButtonEnabled.value = isRunning
+            _startButtonEnabled.value = (_stepCounterNotAvailableVisibility.value == View.GONE) && !isRunning
+            _stopButtonEnabled.value = (_stepCounterNotAvailableVisibility.value == View.GONE) && isRunning
         }
 
         repository.setOnStepsTakenListener { steps ->
