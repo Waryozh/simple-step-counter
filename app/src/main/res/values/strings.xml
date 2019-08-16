@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">SimpleStepCounter</string>
-    <string name="steps_taken">%d steps taken</string>
+    <string name="steps">Steps:</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
+    <string name="step_counter_not_available">ERROR: Step Counter is not available on this device.\nThis application will
+        not work.
+    </string>
+    <string name="steps_taken">%1$d steps taken</string>
 </resources>
