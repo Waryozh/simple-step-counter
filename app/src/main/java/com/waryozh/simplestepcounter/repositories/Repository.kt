@@ -7,6 +7,7 @@ import com.waryozh.simplestepcounter.App
 object Repository {
     private const val IS_RUNNING = "IS_RUNNING"
     private const val STEPS_TAKEN = "STEPS_TAKEN"
+    private const val STEPS_TAKEN_CORRECTION = "STEPS_TAKEN_CORRECTION"
 
     private val prefs: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(App.applicationContext())
@@ -48,13 +49,17 @@ object Repository {
         stepCounterServiceRunningListener?.invoke(isRunning)
     }
 
-    fun getStepsTaken() = prefs.getLong(STEPS_TAKEN, 0)
+    fun getStepsTaken() = prefs.getLong(STEPS_TAKEN, 0) - prefs.getLong(STEPS_TAKEN_CORRECTION, 0)
 
     fun setStepsTaken(steps: Long) {
+        val stepsInPrefs = prefs.getLong(STEPS_TAKEN, 0)
         with(prefs.edit()) {
+            if (stepsInPrefs == 0L) {
+                putLong(STEPS_TAKEN_CORRECTION, steps)
+            }
             putLong(STEPS_TAKEN, steps)
             apply()
         }
-        stepsTakenListener?.invoke(steps)
+        stepsTakenListener?.invoke(steps - prefs.getLong(STEPS_TAKEN_CORRECTION, 0))
     }
 }
