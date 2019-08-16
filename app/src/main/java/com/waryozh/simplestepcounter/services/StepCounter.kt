@@ -22,6 +22,9 @@ class StepCounter : Service(), SensorEventListener {
         private const val NOTIFICATION_ID = 1234
     }
 
+    private lateinit var notificationManager: NotificationManager
+    private lateinit var notificationBuilder: NotificationCompat.Builder
+
     private val repository = Repository
 
     override fun onBind(intent: Intent?): IBinder? = null
@@ -40,14 +43,14 @@ class StepCounter : Service(), SensorEventListener {
             return START_NOT_STICKY
         }
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel =
                 NotificationChannel(PRIMARY_CHANNEL_ID, "Step counter notification", NotificationManager.IMPORTANCE_LOW)
             notificationManager.createNotificationChannel(notificationChannel)
         }
 
-        val notificationBuilder = NotificationCompat.Builder(this, PRIMARY_CHANNEL_ID).apply {
+        notificationBuilder = NotificationCompat.Builder(this, PRIMARY_CHANNEL_ID).apply {
             setContentTitle(getString(R.string.steps_taken, repository.getStepsTaken()))
             setSmallIcon(R.drawable.ic_directions_walk_black_24dp)
             setOngoing(true)
@@ -77,6 +80,10 @@ class StepCounter : Service(), SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent?) {
         repository.setStepsTaken(event!!.values[0].toLong())
+
+        notificationBuilder.setContentTitle(getString(R.string.steps_taken, repository.getStepsTaken()))
+        val notification = notificationBuilder.build()
+        notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
