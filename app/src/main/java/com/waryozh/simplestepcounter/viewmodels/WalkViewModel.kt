@@ -26,12 +26,15 @@ class WalkViewModel : ViewModel() {
         get() = _stopButtonEnabled
 
     private var _serviceRunning = MutableLiveData<Boolean>()
-    val serviceRunning: LiveData<Boolean>
-        get() = _serviceRunning
+
+    private var _shouldStartService = MutableLiveData<Boolean>()
+    val shouldStartService: LiveData<Boolean>
+        get() = _shouldStartService
 
     init {
         _stepsTaken.value = repository.getStepsTaken()
         _serviceRunning.value = repository.getServiceRunning()
+        _shouldStartService.value = (_serviceRunning.value == false) && repository.getServiceShouldRun()
         _stepCounterNotAvailableVisibility.value = View.GONE
         _startButtonEnabled.value = !(_serviceRunning.value ?: true)
         _stopButtonEnabled.value = _serviceRunning.value
@@ -44,6 +47,7 @@ class WalkViewModel : ViewModel() {
 
         repository.setOnStepCounterServiceRunningListener { isRunning ->
             _serviceRunning.value = isRunning
+            _shouldStartService.value = false
             _startButtonEnabled.value = (_stepCounterNotAvailableVisibility.value == View.GONE) && !isRunning
             _stopButtonEnabled.value = (_stepCounterNotAvailableVisibility.value == View.GONE) && isRunning
         }
@@ -55,6 +59,7 @@ class WalkViewModel : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
+        repository.setServiceShouldRun(true)
         repository.removeListeners()
     }
 }

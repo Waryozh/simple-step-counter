@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         binding.walkViewModel = walkViewModel
         binding.lifecycleOwner = this
 
-        if (walkViewModel.serviceRunning.value != true) {
+        if (walkViewModel.shouldStartService.value == true) {
             startStepCounterService()
         }
     }

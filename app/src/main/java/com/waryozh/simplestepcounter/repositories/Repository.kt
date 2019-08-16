@@ -6,6 +6,7 @@ import com.waryozh.simplestepcounter.App
 
 object Repository {
     private const val IS_RUNNING = "IS_RUNNING"
+    private const val SHOULD_RUN = "SHOULD_RUN"
     private const val STEPS_TAKEN = "STEPS_TAKEN"
     private const val STEPS_TAKEN_CORRECTION = "STEPS_TAKEN_CORRECTION"
 
@@ -44,9 +45,19 @@ object Repository {
     fun setServiceRunning(isRunning: Boolean) {
         with(prefs.edit()) {
             putBoolean(IS_RUNNING, isRunning)
+            putBoolean(SHOULD_RUN, false)
             apply()
         }
         stepCounterServiceRunningListener?.invoke(isRunning)
+    }
+
+    fun getServiceShouldRun() = prefs.getBoolean(SHOULD_RUN, true)
+
+    fun setServiceShouldRun(shouldRun: Boolean) {
+        with(prefs.edit()) {
+            putBoolean(SHOULD_RUN, shouldRun)
+            apply()
+        }
     }
 
     fun getStepsTaken() = prefs.getLong(STEPS_TAKEN, 0) - prefs.getLong(STEPS_TAKEN_CORRECTION, 0)
