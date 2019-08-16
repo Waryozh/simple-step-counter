@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SimpleStepCounter</string>
+    <string name="app_name">Simple Step Counter</string>
     <string name="steps">Steps:</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
