@@ -32,17 +32,6 @@ class StepCounter : Service(), SensorEventListener {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
-        val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        val stepCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
-        if (stepCounterSensor != null) {
-            repository.setStepCounterAvailable(true)
-            sensorManager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_UI)
-        } else {
-            repository.setStepCounterAvailable(false)
-            stopSelf()
-            return START_NOT_STICKY
-        }
-
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel =
@@ -51,7 +40,6 @@ class StepCounter : Service(), SensorEventListener {
         }
 
         notificationBuilder = NotificationCompat.Builder(this, PRIMARY_CHANNEL_ID).apply {
-            setContentTitle(getString(R.string.steps_taken, repository.getStepsTaken()))
             setSmallIcon(R.drawable.ic_directions_walk_black_24dp)
             setOngoing(true)
             setAutoCancel(false)
@@ -64,13 +52,33 @@ class StepCounter : Service(), SensorEventListener {
             }
         }
 
-        val notification = notificationBuilder.build()
-        startForeground(NOTIFICATION_ID, notification)
-        notificationManager.notify(NOTIFICATION_ID, notification)
-
         repository.setServiceRunning(true)
 
+        val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val stepCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+        if (stepCounterSensor != null) {
+            repository.setStepCounterAvailable(true)
+            sensorManager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_UI)
+            notifyAndStartForeground(getString(R.string.steps_taken, repository.getStepsTaken()))
+        } else {
+            repository.setStepCounterAvailable(false)
+            notifyAndStartForeground("Step Counter not available")
+            stopSelf()
+            return START_NOT_STICKY
+        }
+
         return START_STICKY
+    }
+
+    private fun notifyWithTitle(title: String): Notification {
+        notificationBuilder.setContentTitle(title)
+        val notification = notificationBuilder.build()
+        notificationManager.notify(NOTIFICATION_ID, notification)
+        return notification
+    }
+
+    private fun notifyAndStartForeground(title: String) {
+        startForeground(NOTIFICATION_ID, notifyWithTitle(title))
     }
 
     override fun onDestroy() {
@@ -80,10 +88,7 @@ class StepCounter : Service(), SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent?) {
         repository.setStepsTaken(event!!.values[0].toLong())
-
-        notificationBuilder.setContentTitle(getString(R.string.steps_taken, repository.getStepsTaken()))
-        val notification = notificationBuilder.build()
-        notificationManager.notify(NOTIFICATION_ID, notification)
+        notifyWithTitle(getString(R.string.steps_taken, repository.getStepsTaken()))
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
