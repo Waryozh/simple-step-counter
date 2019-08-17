@@ -1,9 +1,6 @@
 package com.waryozh.simplestepcounter.services
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.Service
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.hardware.Sensor
@@ -14,6 +11,7 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import com.waryozh.simplestepcounter.MainActivity
 import com.waryozh.simplestepcounter.R
 import com.waryozh.simplestepcounter.repositories.Repository
 
@@ -40,8 +38,16 @@ class StepCounter : Service(), SensorEventListener {
             notificationManager.createNotificationChannel(notificationChannel)
         }
 
+        val contentPendingIntent = PendingIntent.getActivity(
+            this,
+            NOTIFICATION_ID,
+            Intent(this, MainActivity::class.java).apply { setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) },
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
         notificationBuilder = NotificationCompat.Builder(this, PRIMARY_CHANNEL_ID).apply {
             setSmallIcon(R.drawable.ic_directions_run_white_24dp)
+            setContentIntent(contentPendingIntent)
             setOngoing(true)
             setAutoCancel(false)
             setOnlyAlertOnce(true)
