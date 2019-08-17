@@ -40,7 +40,7 @@ class StepCounter : Service(), SensorEventListener {
         }
 
         notificationBuilder = NotificationCompat.Builder(this, PRIMARY_CHANNEL_ID).apply {
-            setSmallIcon(R.drawable.ic_directions_walk_black_24dp)
+            setSmallIcon(R.drawable.ic_directions_run_black_24dp)
             setOngoing(true)
             setAutoCancel(false)
             setOnlyAlertOnce(true)
