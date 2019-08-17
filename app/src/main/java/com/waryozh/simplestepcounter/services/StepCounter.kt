@@ -45,11 +45,7 @@ class StepCounter : Service(), SensorEventListener {
             setAutoCancel(false)
             setOnlyAlertOnce(true)
             setVisibility(Notification.VISIBILITY_PRIVATE)
-            priority = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                NotificationManager.IMPORTANCE_LOW
-            } else {
-                Notification.PRIORITY_LOW
-            }
+            priority = NotificationCompat.PRIORITY_LOW
         }
 
         repository.setServiceRunning(true)
