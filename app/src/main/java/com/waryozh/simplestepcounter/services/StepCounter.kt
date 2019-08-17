@@ -13,6 +13,7 @@ import android.hardware.SensorManager
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.waryozh.simplestepcounter.R
 import com.waryozh.simplestepcounter.repositories.Repository
 
@@ -46,6 +47,8 @@ class StepCounter : Service(), SensorEventListener {
             setOnlyAlertOnce(true)
             setVisibility(Notification.VISIBILITY_PRIVATE)
             priority = NotificationCompat.PRIORITY_LOW
+            color = ContextCompat.getColor(this@StepCounter, R.color.color_activity_background)
+            setColorized(true)
         }
 
         repository.setServiceRunning(true)
