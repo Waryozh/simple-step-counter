@@ -2,4 +2,5 @@
 <resources>
     <color name="color_primary_dark">#1C0E42</color>
     <color name="color_accent">#43A047</color>
+    <color name="color_activity_background">#303030</color>
 </resources>

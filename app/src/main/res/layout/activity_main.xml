@@ -18,8 +18,7 @@
         <TextView
                 android:id="@+id/tv_no_sensor"
                 android:text="@string/step_counter_not_available"
-                android:textSize="32sp"
-                android:textAlignment="center"
+                style="@style/TextAppearance.Error"
                 android:visibility="@{walkViewModel.stepCounterNotAvailableVisibility}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -33,7 +32,7 @@
         <TextView
                 android:id="@+id/tv_steps_label"
                 android:text="@string/steps"
-                android:textSize="32sp"
+                style="@style/TextAppearance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -45,7 +44,7 @@
         <TextView
                 android:id="@+id/tv_steps_taken"
                 android:text="@{String.valueOf(walkViewModel.stepsTaken)}"
-                android:textSize="32sp"
+                style="@style/TextAppearance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_normal_16"
