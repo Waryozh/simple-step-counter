@@ -53,7 +53,7 @@ class WalkViewModel : ViewModel() {
         }
 
         repository.setOnStepsTakenListener { steps ->
-            _stepsTaken.value = steps
+            _stepsTaken.postValue(steps)
         }
     }
 
