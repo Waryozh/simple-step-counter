@@ -60,17 +60,21 @@ object Repository {
         }
     }
 
-    fun getStepsTaken() = prefs.getLong(STEPS_TAKEN, 0) - prefs.getLong(STEPS_TAKEN_CORRECTION, 0)
+    fun getStepsTaken() = prefs.getLong(STEPS_TAKEN, 0)
 
     fun setStepsTaken(steps: Long) {
         val stepsInPrefs = prefs.getLong(STEPS_TAKEN, 0)
+        var correction = prefs.getLong(STEPS_TAKEN_CORRECTION, 0)
         with(prefs.edit()) {
+            // Step Counter returns the number of steps taken by the user since the last reboot,
+            // so we have to calculate the offset when starting a new step recording session.
             if (stepsInPrefs == 0L) {
+                correction = steps
                 putLong(STEPS_TAKEN_CORRECTION, steps)
             }
-            putLong(STEPS_TAKEN, steps)
+            putLong(STEPS_TAKEN, steps - correction)
             apply()
         }
-        stepsTakenListener?.invoke(steps - prefs.getLong(STEPS_TAKEN_CORRECTION, 0))
+        stepsTakenListener?.invoke(steps)
     }
 }
