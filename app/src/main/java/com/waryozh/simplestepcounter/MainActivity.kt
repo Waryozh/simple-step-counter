@@ -14,11 +14,13 @@ import com.waryozh.simplestepcounter.viewmodels.WalkViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 
+    private val walkViewModel: WalkViewModel by lazy {
+        ViewModelProviders.of(this, WalkViewModelFactory()).get(WalkViewModel::class.java)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        val walkViewModel = ViewModelProviders.of(this, WalkViewModelFactory()).get(WalkViewModel::class.java)
 
         val binding: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.walkViewModel = walkViewModel
