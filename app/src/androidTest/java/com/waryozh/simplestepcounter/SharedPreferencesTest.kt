@@ -51,6 +51,14 @@ class SharedPreferencesTest {
         assertEquals(1500, prefs.getLong(STEPS_TAKEN, -1))
     }
 
+    @Test
+    fun resetSteps() {
+        setPrefs(1000, 500)
+        repository.resetStepCounter()
+        assertEquals(500, prefs.getLong(STEPS_TAKEN_CORRECTION, -1))
+        assertEquals(0, prefs.getLong(STEPS_TAKEN, -1))
+    }
+
     private fun setPrefs(steps: Long, correction: Long) {
         with(prefs.edit()) {
             putLong(STEPS_TAKEN, steps)

@@ -7,4 +7,5 @@
         not work.
     </string>
     <string name="steps_taken">%1$d steps taken</string>
+    <string name="reset_steps">Reset steps</string>
 </resources>

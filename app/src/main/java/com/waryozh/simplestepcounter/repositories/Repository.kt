@@ -77,4 +77,11 @@ object Repository {
         }
         stepsTakenListener?.invoke(steps)
     }
+
+    fun resetStepCounter() {
+        // When resetting the counter, set the STEPS_TAKEN to the current value of STEPS_TAKEN_CORRECTION.
+        // That way the effective value of STEPS_TAKEN will become zero
+        // and STEPS_TAKEN_CORRECTION will be properly updated when a new session is started.
+        setStepsTaken(prefs.getLong(STEPS_TAKEN_CORRECTION, 0))
+    }
 }

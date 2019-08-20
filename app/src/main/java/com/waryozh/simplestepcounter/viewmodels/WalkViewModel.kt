@@ -57,6 +57,10 @@ class WalkViewModel : ViewModel() {
         }
     }
 
+    fun resetStepCounter() {
+        repository.resetStepCounter()
+    }
+
     override fun onCleared() {
         super.onCleared()
         repository.setServiceShouldRun(true)
