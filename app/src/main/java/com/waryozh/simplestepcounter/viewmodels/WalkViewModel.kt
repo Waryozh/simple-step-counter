@@ -9,8 +9,8 @@ import com.waryozh.simplestepcounter.repositories.Repository
 class WalkViewModel : ViewModel() {
     private val repository = Repository
 
-    private var _stepsTaken = MutableLiveData<Long>()
-    val stepsTaken: LiveData<Long>
+    private var _stepsTaken = MutableLiveData<Int>()
+    val stepsTaken: LiveData<Int>
         get() = _stepsTaken
 
     private var _stepCounterNotAvailableVisibility = MutableLiveData<Int>()

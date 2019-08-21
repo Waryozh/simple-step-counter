@@ -16,7 +16,7 @@ object Repository {
 
     private var stepCounterAvailableListener: ((Boolean) -> Unit)? = null
     private var stepCounterServiceRunningListener: ((Boolean) -> Unit)? = null
-    private var stepsTakenListener: ((Long) -> Unit)? = null
+    private var stepsTakenListener: ((Int) -> Unit)? = null
 
     fun setStepCounterAvailable(isAvailable: Boolean) {
         stepCounterAvailableListener?.invoke(isAvailable)
@@ -30,7 +30,7 @@ object Repository {
         this.stepCounterServiceRunningListener = listener
     }
 
-    fun setOnStepsTakenListener(listener: (Long) -> Unit) {
+    fun setOnStepsTakenListener(listener: (Int) -> Unit) {
         this.stepsTakenListener = listener
     }
 
@@ -60,19 +60,19 @@ object Repository {
         }
     }
 
-    fun getStepsTaken() = prefs.getLong(STEPS_TAKEN, 0)
+    fun getStepsTaken() = prefs.getInt(STEPS_TAKEN, 0)
 
-    fun setStepsTaken(steps: Long) {
-        val stepsInPrefs = prefs.getLong(STEPS_TAKEN, 0)
-        var correction = prefs.getLong(STEPS_TAKEN_CORRECTION, 0)
+    fun setStepsTaken(steps: Int) {
+        val stepsInPrefs = prefs.getInt(STEPS_TAKEN, 0)
+        var correction = prefs.getInt(STEPS_TAKEN_CORRECTION, 0)
         with(prefs.edit()) {
             // Step Counter returns the number of steps taken by the user since the last reboot,
             // so we have to calculate the offset when starting a new step recording session.
-            if (stepsInPrefs == 0L) {
+            if (stepsInPrefs == 0) {
                 correction = steps
-                putLong(STEPS_TAKEN_CORRECTION, steps)
+                putInt(STEPS_TAKEN_CORRECTION, steps)
             }
-            putLong(STEPS_TAKEN, steps - correction)
+            putInt(STEPS_TAKEN, steps - correction)
             apply()
         }
         stepsTakenListener?.invoke(steps - correction)
@@ -82,6 +82,6 @@ object Repository {
         // When resetting the counter, set the STEPS_TAKEN to the current value of STEPS_TAKEN_CORRECTION.
         // That way the effective value of STEPS_TAKEN will become zero
         // and STEPS_TAKEN_CORRECTION will be properly updated when a new session is started.
-        setStepsTaken(prefs.getLong(STEPS_TAKEN_CORRECTION, 0))
+        setStepsTaken(prefs.getInt(STEPS_TAKEN_CORRECTION, 0))
     }
 }

@@ -43,24 +43,24 @@ class SharedPreferencesTest {
     fun newStepSession() {
         setPrefs(0, 0)
         repository.setStepsTaken(1000)
-        assertEquals(1000, prefs.getLong(STEPS_TAKEN_CORRECTION, -1))
-        assertEquals(0, prefs.getLong(STEPS_TAKEN, -1))
+        assertEquals(1000, prefs.getInt(STEPS_TAKEN_CORRECTION, -1))
+        assertEquals(0, prefs.getInt(STEPS_TAKEN, -1))
     }
 
     @Test
     fun updateStepsTaken() {
         setPrefs(1000, 500)
         repository.setStepsTaken(2000)
-        assertEquals(500, prefs.getLong(STEPS_TAKEN_CORRECTION, -1))
-        assertEquals(1500, prefs.getLong(STEPS_TAKEN, -1))
+        assertEquals(500, prefs.getInt(STEPS_TAKEN_CORRECTION, -1))
+        assertEquals(1500, prefs.getInt(STEPS_TAKEN, -1))
     }
 
     @Test
     fun resetSteps() {
         setPrefs(1000, 500)
         repository.resetStepCounter()
-        assertEquals(500, prefs.getLong(STEPS_TAKEN_CORRECTION, -1))
-        assertEquals(0, prefs.getLong(STEPS_TAKEN, -1))
+        assertEquals(500, prefs.getInt(STEPS_TAKEN_CORRECTION, -1))
+        assertEquals(0, prefs.getInt(STEPS_TAKEN, -1))
     }
 
     @Test
@@ -87,10 +87,10 @@ class SharedPreferencesTest {
         Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("0")))
     }
 
-    private fun setPrefs(steps: Long, correction: Long) {
+    private fun setPrefs(steps: Int, correction: Int) {
         with(prefs.edit()) {
-            putLong(STEPS_TAKEN, steps)
-            putLong(STEPS_TAKEN_CORRECTION, correction)
+            putInt(STEPS_TAKEN, steps)
+            putInt(STEPS_TAKEN_CORRECTION, correction)
             apply()
         }
     }

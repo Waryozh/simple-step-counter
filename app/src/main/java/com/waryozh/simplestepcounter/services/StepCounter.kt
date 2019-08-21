@@ -92,7 +92,7 @@ class StepCounter : Service(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        repository.setStepsTaken(event!!.values[0].toLong())
+        repository.setStepsTaken(event!!.values[0].toInt())
         notifyWithTitle(getString(R.string.steps_taken, repository.getStepsTaken()))
     }
 
