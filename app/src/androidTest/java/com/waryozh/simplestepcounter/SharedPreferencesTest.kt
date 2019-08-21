@@ -3,6 +3,10 @@ package com.waryozh.simplestepcounter
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager.getDefaultSharedPreferencesName
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.waryozh.simplestepcounter.repositories.Repository
@@ -57,6 +61,30 @@ class SharedPreferencesTest {
         repository.resetStepCounter()
         assertEquals(500, prefs.getLong(STEPS_TAKEN_CORRECTION, -1))
         assertEquals(0, prefs.getLong(STEPS_TAKEN, -1))
+    }
+
+    @Test
+    fun cancelResetStepsDialog() {
+        setPrefs(1000, 500)
+        repository.setStepsTaken(1000)
+        Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("500")))
+
+        Espresso.openActionBarOverflowOrOptionsMenu(applicationContext)
+        Espresso.onView(ViewMatchers.withText(R.string.reset_steps)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withText(R.string.cancel)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("500")))
+    }
+
+    @Test
+    fun confirmResetStepsDialog() {
+        setPrefs(1000, 500)
+        repository.setStepsTaken(1000)
+        Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("500")))
+
+        Espresso.openActionBarOverflowOrOptionsMenu(applicationContext)
+        Espresso.onView(ViewMatchers.withText(R.string.reset_steps)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withText(R.string.reset)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("0")))
     }
 
     private fun setPrefs(steps: Long, correction: Long) {
