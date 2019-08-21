@@ -11,4 +11,10 @@
     <string name="reset_step_counter_question">Reset Step Counter?</string>
     <string name="reset">Reset</string>
     <string name="cancel">Cancel</string>
+    <string name="set_step_length">Set step length</string>
+    <string name="set_step_length_title">Set your step length in centimeters</string>
+    <string name="ok">OK</string>
+    <string name="meters">Meters:</string>
+    <string name="invalid_step_length">Invalid step length</string>
+    <string name="hint_step_length">Step length</string>
 </resources>

@@ -9,6 +9,7 @@ object Repository {
     private const val SHOULD_RUN = "SHOULD_RUN"
     private const val STEPS_TAKEN = "STEPS_TAKEN"
     private const val STEPS_TAKEN_CORRECTION = "STEPS_TAKEN_CORRECTION"
+    private const val STEP_LENGTH = "STEP_LENGTH"
 
     private val prefs: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(App.applicationContext())
@@ -17,10 +18,7 @@ object Repository {
     private var stepCounterAvailableListener: ((Boolean) -> Unit)? = null
     private var stepCounterServiceRunningListener: ((Boolean) -> Unit)? = null
     private var stepsTakenListener: ((Int) -> Unit)? = null
-
-    fun setStepCounterAvailable(isAvailable: Boolean) {
-        stepCounterAvailableListener?.invoke(isAvailable)
-    }
+    private var stepLengthListener: ((Int) -> Unit)? = null
 
     fun setOnStepCounterAvailableListener(listener: (Boolean) -> Unit) {
         this.stepCounterAvailableListener = listener
@@ -34,10 +32,19 @@ object Repository {
         this.stepsTakenListener = listener
     }
 
+    fun setOnStepLengthListener(listener: (Int) -> Unit) {
+        this.stepLengthListener = listener
+    }
+
     fun removeListeners() {
         this.stepCounterAvailableListener = null
         this.stepCounterServiceRunningListener = null
         this.stepsTakenListener = null
+        this.stepLengthListener = null
+    }
+
+    fun setStepCounterAvailable(isAvailable: Boolean) {
+        stepCounterAvailableListener?.invoke(isAvailable)
     }
 
     fun getServiceRunning() = prefs.getBoolean(IS_RUNNING, false)
@@ -83,5 +90,16 @@ object Repository {
         // That way the effective value of STEPS_TAKEN will become zero
         // and STEPS_TAKEN_CORRECTION will be properly updated when a new session is started.
         setStepsTaken(prefs.getInt(STEPS_TAKEN_CORRECTION, 0))
+    }
+
+    fun getStepLength() = prefs.getInt(STEP_LENGTH, 0)
+
+    // Step length is stored in centimeters
+    fun setStepLength(length: Int) {
+        with(prefs.edit()) {
+            putInt(STEP_LENGTH, length)
+            apply()
+        }
+        stepLengthListener?.invoke(length)
     }
 }

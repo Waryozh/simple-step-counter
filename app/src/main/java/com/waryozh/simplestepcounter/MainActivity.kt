@@ -11,14 +11,17 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import com.waryozh.simplestepcounter.databinding.ActivityMainBinding
 import com.waryozh.simplestepcounter.dialogs.ResetStepCounterDialogFragment
+import com.waryozh.simplestepcounter.dialogs.SetStepLengthDialogFragment
 import com.waryozh.simplestepcounter.services.StepCounter
 import com.waryozh.simplestepcounter.viewmodels.WalkViewModel
 import com.waryozh.simplestepcounter.viewmodels.WalkViewModelFactory
 
+private const val SET_STEP_LENGTH_DIALOG_TAG = "SET_STEP_LENGTH_DIALOG_TAG"
 private const val RESET_STEP_COUNTER_DIALOG_TAG = "RESET_STEP_COUNTER_DIALOG_TAG"
 
-class MainActivity : AppCompatActivity(), ResetStepCounterDialogFragment.ResetStepCounterDialogListener {
-
+class MainActivity : AppCompatActivity(),
+    SetStepLengthDialogFragment.SetStepLengthDialogListener,
+    ResetStepCounterDialogFragment.ResetStepCounterDialogListener {
     private val walkViewModel: WalkViewModel by lazy {
         ViewModelProviders.of(this, WalkViewModelFactory()).get(WalkViewModel::class.java)
     }
@@ -43,6 +46,9 @@ class MainActivity : AppCompatActivity(), ResetStepCounterDialogFragment.ResetSt
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.action_set_step_length -> {
+                SetStepLengthDialogFragment(walkViewModel.stepLength.value ?: 0).show(supportFragmentManager, SET_STEP_LENGTH_DIALOG_TAG)
+            }
             R.id.action_reset -> {
                 ResetStepCounterDialogFragment().show(supportFragmentManager, RESET_STEP_COUNTER_DIALOG_TAG)
             }
@@ -50,7 +56,11 @@ class MainActivity : AppCompatActivity(), ResetStepCounterDialogFragment.ResetSt
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onDialogPositiveClick() {
+    override fun onSetStepLengthDialogPositiveClick(length: Int) {
+        walkViewModel.setStepLength(length)
+    }
+
+    override fun onResetStepCounterDialogPositiveClick() {
         walkViewModel.resetStepCounter()
     }
 

@@ -13,7 +13,7 @@ class ResetStepCounterDialogFragment : DialogFragment() {
     // The activity that creates an instance of this dialog fragment must
     // implement this interface in order to receive event callbacks.
     interface ResetStepCounterDialogListener {
-        fun onDialogPositiveClick()
+        fun onResetStepCounterDialogPositiveClick()
     }
 
     override fun onAttach(context: Context?) {
@@ -24,7 +24,7 @@ class ResetStepCounterDialogFragment : DialogFragment() {
         } catch (e: ClassCastException) {
             throw ClassCastException(
                 (context.toString() +
-                        " must implement NoticeDialogListener")
+                        " must implement ResetStepCounterDialogListener")
             )
         }
     }
@@ -34,7 +34,7 @@ class ResetStepCounterDialogFragment : DialogFragment() {
             AlertDialog.Builder(it, android.R.style.Theme_Material_Dialog_Alert)
                 .setMessage(R.string.reset_step_counter_question)
                 .setPositiveButton(R.string.reset) { _, _ ->
-                    listener.onDialogPositiveClick()
+                    listener.onResetStepCounterDialogPositiveClick()
                 }
                 .setNegativeButton(R.string.cancel) { _, _ ->
                     dismiss()

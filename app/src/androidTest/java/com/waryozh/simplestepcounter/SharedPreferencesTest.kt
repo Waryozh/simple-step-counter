@@ -19,6 +19,7 @@ import org.junit.runner.RunWith
 private const val STEPS_TAKEN = "STEPS_TAKEN"
 private const val STEPS_TAKEN_CORRECTION = "STEPS_TAKEN_CORRECTION"
 
+// TODO: refactor into several separate test classes
 @RunWith(AndroidJUnit4::class)
 class SharedPreferencesTest {
     @Rule
@@ -63,28 +64,76 @@ class SharedPreferencesTest {
         assertEquals(0, prefs.getInt(STEPS_TAKEN, -1))
     }
 
-    @Test
-    fun cancelResetStepsDialog() {
-        setPrefs(1000, 500)
+    private fun initResetStepsDialogTest() {
+        setPrefs(1000, 0)
+        repository.setStepLength(70)
         repository.setStepsTaken(1000)
-        Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("500")))
+        Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("1000")))
+        Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("700")))
+    }
+
+    @Test
+    fun resetStepsDialog_Cancel() {
+        initResetStepsDialogTest()
 
         Espresso.openActionBarOverflowOrOptionsMenu(applicationContext)
         Espresso.onView(ViewMatchers.withText(R.string.reset_steps)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withText(R.string.cancel)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("500")))
+        Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("1000")))
+        Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("700")))
+        assertEquals(70, repository.getStepLength())
     }
 
     @Test
-    fun confirmResetStepsDialog() {
-        setPrefs(1000, 500)
-        repository.setStepsTaken(1000)
-        Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("500")))
+    fun resetStepsDialog_Confirm() {
+        initResetStepsDialogTest()
 
         Espresso.openActionBarOverflowOrOptionsMenu(applicationContext)
         Espresso.onView(ViewMatchers.withText(R.string.reset_steps)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withText(R.string.reset)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("0")))
+        Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("0")))
+        assertEquals(70, repository.getStepLength())
+    }
+
+    @Test
+    fun setStepLengthDialog_Cancel() {
+        initStepLengthDialogTest()
+
+        Espresso.onView(ViewMatchers.withText(R.string.cancel)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("700")))
+        assertEquals(70, repository.getStepLength())
+    }
+
+    @Test
+    fun setStepLengthDialog_ChangeAndCancel() {
+        initStepLengthDialogTest()
+
+        Espresso.onView(ViewMatchers.withId(R.id.et_step_length)).perform(ViewActions.replaceText("123"))
+        Espresso.onView(ViewMatchers.withText(R.string.cancel)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("700")))
+        assertEquals(70, repository.getStepLength())
+    }
+
+    @Test
+    fun setStepLengthDialog_InvalidLength() {
+        initStepLengthDialogTest()
+
+        listOf("0", "-1", "1.5", "201", "1000", Int.MAX_VALUE.toString()).forEach {
+            Espresso.onView(ViewMatchers.withId(R.id.et_step_length)).perform(ViewActions.replaceText(it))
+            Espresso.onView(ViewMatchers.withText(R.string.ok)).perform(ViewActions.click())
+            assertEquals(70, repository.getStepLength())
+        }
+    }
+
+    @Test
+    fun setStepLengthDialog_ValidLength() {
+        initStepLengthDialogTest()
+
+        Espresso.onView(ViewMatchers.withId(R.id.et_step_length)).perform(ViewActions.replaceText("123"))
+        Espresso.onView(ViewMatchers.withText(R.string.ok)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("1230")))
+        assertEquals(123, repository.getStepLength())
     }
 
     private fun setPrefs(steps: Int, correction: Int) {
@@ -93,5 +142,17 @@ class SharedPreferencesTest {
             putInt(STEPS_TAKEN_CORRECTION, correction)
             apply()
         }
+    }
+
+    private fun initStepLengthDialogTest() {
+        setPrefs(1000, 0)
+        repository.setStepLength(70)
+        repository.setStepsTaken(1000)
+        Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("1000")))
+        Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("700")))
+
+        Espresso.openActionBarOverflowOrOptionsMenu(applicationContext)
+        Espresso.onView(ViewMatchers.withText(R.string.set_step_length)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.et_step_length)).check(ViewAssertions.matches(ViewMatchers.withText("70")))
     }
 }

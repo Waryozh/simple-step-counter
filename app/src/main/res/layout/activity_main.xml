@@ -55,6 +55,32 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tv_steps_label"/>
 
+        <TextView
+                android:id="@+id/tv_distance_label"
+                android:text="@string/meters"
+                style="@style/TextAppearance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="@dimen/spacing_normal_16"
+                app:layout_constraintBaseline_toBaselineOf="@+id/tv_distance_walked"
+                app:layout_constraintEnd_toStartOf="@+id/tv_distance_walked"/>
+
+        <TextView
+                android:id="@+id/tv_distance_walked"
+                android:text="@{String.valueOf(walkViewModel.distanceWalked)}"
+                style="@style/TextAppearance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal_16"
+                app:layout_constraintTop_toTopOf="@id/tv_steps_taken"
+                android:layout_marginBottom="@dimen/spacing_normal_16"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="@dimen/spacing_normal_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_distance_label"/>
+
         <Button
                 android:id="@+id/button_start"
                 android:text="@string/start"
