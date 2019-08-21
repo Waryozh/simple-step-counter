@@ -75,7 +75,7 @@ object Repository {
             putLong(STEPS_TAKEN, steps - correction)
             apply()
         }
-        stepsTakenListener?.invoke(steps)
+        stepsTakenListener?.invoke(steps - correction)
     }
 
     fun resetStepCounter() {
