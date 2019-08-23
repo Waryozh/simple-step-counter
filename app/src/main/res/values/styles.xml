@@ -7,8 +7,21 @@
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent</item>
         <item name="android:windowBackground">@color/color_activity_background</item>
+
+        <!-- Overflow menu background color -->
         <item name="android:itemBackground">@color/color_activity_background</item>
+
+        <!-- Overflow menu items text -->
         <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.NumberPicker" parent="AppTheme">
+        <item name="android:textSize">@dimen/font_large_20</item>
+        
+        <!-- Number picker elements text -->
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <!-- Number picker divider lines -->
+        <item name="android:colorControlNormal">@color/color_accent</item>
     </style>
 
     <style name="TextAppearance">
