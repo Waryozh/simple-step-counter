@@ -44,23 +44,26 @@ class MainActivity : AppCompatActivity(),
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_set_step_length -> {
-                val dialog = SetStepLengthDialogFragment()
-                dialog.arguments = Bundle().apply {
-                    putInt(
-                        SetStepLengthDialogFragment.STEP_LENGTH_FOR_DIALOG,
-                        walkViewModel.stepLength.value ?: 0
-                    )
-                }
-                dialog.show(supportFragmentManager, SET_STEP_LENGTH_DIALOG_TAG)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.action_set_step_length -> {
+            val dialog = SetStepLengthDialogFragment()
+            dialog.arguments = Bundle().apply {
+                putInt(
+                    SetStepLengthDialogFragment.STEP_LENGTH_FOR_DIALOG,
+                    walkViewModel.stepLength.value ?: 0
+                )
             }
-            R.id.action_reset -> {
-                ResetStepCounterDialogFragment().show(supportFragmentManager, RESET_STEP_COUNTER_DIALOG_TAG)
-            }
+            dialog.show(supportFragmentManager, SET_STEP_LENGTH_DIALOG_TAG)
+            true
         }
-        return super.onOptionsItemSelected(item)
+        R.id.action_reset -> {
+            ResetStepCounterDialogFragment().show(
+                supportFragmentManager,
+                RESET_STEP_COUNTER_DIALOG_TAG
+            )
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun onSetStepLengthDialogPositiveClick(length: Int) {
