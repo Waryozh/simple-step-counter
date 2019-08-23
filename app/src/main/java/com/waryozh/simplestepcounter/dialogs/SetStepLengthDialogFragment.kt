@@ -9,7 +9,11 @@ import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import com.waryozh.simplestepcounter.R
 
-class SetStepLengthDialogFragment(private val stepLength: Int) : DialogFragment() {
+class SetStepLengthDialogFragment : DialogFragment() {
+    companion object {
+        const val STEP_LENGTH_FOR_DIALOG = "STEP_LENGTH_FOR_DIALOG"
+    }
+
     private lateinit var listener: SetStepLengthDialogListener
 
     // The activity that creates an instance of this dialog fragment must
@@ -36,6 +40,7 @@ class SetStepLengthDialogFragment(private val stepLength: Int) : DialogFragment(
         activity!!.let {
             val view = requireActivity().layoutInflater.inflate(R.layout.dialog_set_step_length, null)
             val editStepLength = view.findViewById<EditText>(R.id.et_step_length)
+            val stepLength = arguments?.getInt(STEP_LENGTH_FOR_DIALOG, 0) ?: 0
             editStepLength.setText(stepLength.toString())
 
             val builder = AlertDialog.Builder(it, android.R.style.Theme_Material_Dialog_Alert)

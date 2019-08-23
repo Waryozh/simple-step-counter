@@ -47,7 +47,14 @@ class MainActivity : AppCompatActivity(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_set_step_length -> {
-                SetStepLengthDialogFragment(walkViewModel.stepLength.value ?: 0).show(supportFragmentManager, SET_STEP_LENGTH_DIALOG_TAG)
+                val dialog = SetStepLengthDialogFragment()
+                dialog.arguments = Bundle().apply {
+                    putInt(
+                        SetStepLengthDialogFragment.STEP_LENGTH_FOR_DIALOG,
+                        walkViewModel.stepLength.value ?: 0
+                    )
+                }
+                dialog.show(supportFragmentManager, SET_STEP_LENGTH_DIALOG_TAG)
             }
             R.id.action_reset -> {
                 ResetStepCounterDialogFragment().show(supportFragmentManager, RESET_STEP_COUNTER_DIALOG_TAG)

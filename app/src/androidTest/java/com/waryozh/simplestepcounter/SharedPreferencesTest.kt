@@ -1,13 +1,16 @@
 package com.waryozh.simplestepcounter
 
+import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.ActivityInfo
 import android.preference.PreferenceManager.getDefaultSharedPreferencesName
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.waryozh.simplestepcounter.repositories.Repository
 import org.junit.Assert.assertEquals
@@ -136,6 +139,34 @@ class SharedPreferencesTest {
         assertEquals(123, repository.getStepLength())
     }
 
+    @Test
+    fun setStepLengthDialog_SaveInLandscapeMode() {
+        initStepLengthDialogTest()
+
+        rotateScreen(rule.activity, true)
+        Espresso.onView(ViewMatchers.withId(R.id.et_step_length)).check(ViewAssertions.matches(ViewMatchers.withText("70")))
+
+        Espresso.onView(ViewMatchers.withId(R.id.et_step_length)).perform(ViewActions.replaceText("87"))
+        Espresso.onView(ViewMatchers.withText(R.string.ok)).perform(ViewActions.click())
+
+        rotateScreen(rule.activity, false)
+        assertEquals(87, repository.getStepLength())
+    }
+
+    @Test
+    fun setStepLengthDialog_SaveAfterRotate() {
+        initStepLengthDialogTest()
+
+        rotateScreen(rule.activity, true)
+        Espresso.onView(ViewMatchers.withId(R.id.et_step_length)).check(ViewAssertions.matches(ViewMatchers.withText("70")))
+
+        Espresso.onView(ViewMatchers.withId(R.id.et_step_length)).perform(ViewActions.replaceText("87"))
+        rotateScreen(rule.activity, false)
+        Espresso.onView(ViewMatchers.withId(R.id.et_step_length)).check(ViewAssertions.matches(ViewMatchers.withText("87")))
+        Espresso.onView(ViewMatchers.withText(R.string.ok)).perform(ViewActions.click())
+        assertEquals(87, repository.getStepLength())
+    }
+
     private fun setPrefs(steps: Int, correction: Int) {
         with(prefs.edit()) {
             putInt(STEPS_TAKEN, steps)
@@ -154,5 +185,13 @@ class SharedPreferencesTest {
         Espresso.openActionBarOverflowOrOptionsMenu(applicationContext)
         Espresso.onView(ViewMatchers.withText(R.string.set_step_length)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withId(R.id.et_step_length)).check(ViewAssertions.matches(ViewMatchers.withText("70")))
+    }
+
+    private fun rotateScreen(activity: Activity, isLandscape: Boolean) {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            activity.requestedOrientation = if (isLandscape) ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+        Thread.sleep(2000)
     }
 }
