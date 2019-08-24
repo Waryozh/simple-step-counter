@@ -17,7 +17,7 @@
 
     <style name="AppTheme.NumberPicker" parent="AppTheme">
         <item name="android:textSize">@dimen/font_large_20</item>
-        
+
         <!-- Number picker elements text -->
         <item name="android:textColorPrimary">@android:color/white</item>
         <!-- Number picker divider lines -->
@@ -25,12 +25,16 @@
     </style>
 
     <style name="TextAppearance">
-        <item name="android:textSize">@dimen/font_huge_32</item>
+        <item name="android:textAlignment">center</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
 
-    <style name="TextAppearance.Error" parent="TextAppearance">
-        <item name="android:textAlignment">center</item>
+    <style name="TextAppearance.Title" parent="TextAppearance">
+        <item name="android:textSize">@dimen/font_huge_32</item>
+    </style>
+
+    <style name="TextAppearance.Subtitle" parent="TextAppearance">
+        <item name="android:textSize">@dimen/font_large_20</item>
     </style>
 
     <style name="ControlButtons" parent="Widget.AppCompat.Button.Colored">

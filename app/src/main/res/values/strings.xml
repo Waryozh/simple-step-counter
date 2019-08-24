@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Simple Step Counter</string>
-    <string name="steps">Steps:</string>
+    <string name="steps">steps</string>
+    <string name="meters">meters</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="step_counter_not_available">ERROR: Step Counter is not available on this device.\nThis application will
@@ -14,7 +15,4 @@
     <string name="set_step_length">Set step length</string>
     <string name="set_step_length_title">Set your step length in centimeters</string>
     <string name="ok">OK</string>
-    <string name="meters">Meters:</string>
-    <string name="invalid_step_length">Invalid step length</string>
-    <string name="hint_step_length">Step length</string>
 </resources>
