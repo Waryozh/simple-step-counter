@@ -22,7 +22,7 @@ class ResetStepsDialogTest : BaseTest() {
     }
 
     @Test
-    fun resetStepsDialog_Cancel() {
+    fun cancelDialog() {
         Espresso.openActionBarOverflowOrOptionsMenu(applicationContext)
         Espresso.onView(ViewMatchers.withText(R.string.reset_steps)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withText(R.string.cancel)).perform(ViewActions.click())
@@ -32,7 +32,7 @@ class ResetStepsDialogTest : BaseTest() {
     }
 
     @Test
-    fun resetStepsDialog_Confirm() {
+    fun confirmDialog() {
         Espresso.openActionBarOverflowOrOptionsMenu(applicationContext)
         Espresso.onView(ViewMatchers.withText(R.string.reset_steps)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withText(R.string.reset)).perform(ViewActions.click())

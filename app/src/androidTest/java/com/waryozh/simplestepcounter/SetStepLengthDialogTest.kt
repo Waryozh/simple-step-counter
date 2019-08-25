@@ -12,36 +12,41 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class SetStepLengthDialogTest : BaseTest() {
+    companion object {
+        private const val DEFAULT_STEPS = 1000
+        private const val DEFAULT_STEP_LENGTH = 70
+    }
+
     @Before
     fun initStepLengthDialogTest() {
-        setPrefs(1000, 0)
-        repository.setStepLength(70)
-        repository.setStepsTaken(1000)
+        setPrefs(DEFAULT_STEPS, 0)
+        repository.setStepLength(DEFAULT_STEP_LENGTH)
+        repository.setStepsTaken(DEFAULT_STEPS)
         Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("1000")))
         Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("700")))
 
         Espresso.openActionBarOverflowOrOptionsMenu(applicationContext)
         Espresso.onView(ViewMatchers.withText(R.string.set_step_length)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).check(ViewAssertions.matches(withNumberPickerValue(70)))
+        Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).check(ViewAssertions.matches(withNumberPickerValue(DEFAULT_STEP_LENGTH)))
     }
 
     @Test
-    fun setStepLengthDialog_Cancel() {
+    fun cancelDialog() {
         Espresso.onView(ViewMatchers.withText(R.string.cancel)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("700")))
-        Assert.assertEquals(70, repository.getStepLength())
+        Assert.assertEquals(DEFAULT_STEP_LENGTH, repository.getStepLength())
     }
 
     @Test
-    fun setStepLengthDialog_ChangeAndCancel() {
+    fun changeAndCancel() {
         Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).perform(setValue(123))
         Espresso.onView(ViewMatchers.withText(R.string.cancel)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("700")))
-        Assert.assertEquals(70, repository.getStepLength())
+        Assert.assertEquals(DEFAULT_STEP_LENGTH, repository.getStepLength())
     }
 
     @Test
-    fun setStepLengthDialog_ValidLength() {
+    fun setValidValue() {
         Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).perform(setValue(123))
         Espresso.onView(ViewMatchers.withText(R.string.ok)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("1230")))
@@ -49,9 +54,9 @@ class SetStepLengthDialogTest : BaseTest() {
     }
 
     @Test
-    fun setStepLengthDialog_SaveInLandscapeMode() {
+    fun saveInLandscapeMode() {
         rotateScreen(rule.activity, true)
-        Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).check(ViewAssertions.matches(withNumberPickerValue(70)))
+        Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).check(ViewAssertions.matches(withNumberPickerValue(DEFAULT_STEP_LENGTH)))
 
         Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).perform(setValue(87))
         Espresso.onView(ViewMatchers.withText(R.string.ok)).perform(ViewActions.click())
@@ -61,9 +66,9 @@ class SetStepLengthDialogTest : BaseTest() {
     }
 
     @Test
-    fun setStepLengthDialog_SaveAfterRotate() {
+    fun saveAfterRotate() {
         rotateScreen(rule.activity, true)
-        Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).check(ViewAssertions.matches(withNumberPickerValue(70)))
+        Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).check(ViewAssertions.matches(withNumberPickerValue(DEFAULT_STEP_LENGTH)))
 
         Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).perform(setValue(87))
         rotateScreen(rule.activity, false)
