@@ -51,7 +51,7 @@ class StepCounter : Service(), SensorEventListener {
             setOngoing(true)
             setAutoCancel(false)
             setOnlyAlertOnce(true)
-            setVisibility(Notification.VISIBILITY_PRIVATE)
+            setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
             priority = NotificationCompat.PRIORITY_LOW
             color = ContextCompat.getColor(this@StepCounter, R.color.color_activity_background)
             setColorized(true)
