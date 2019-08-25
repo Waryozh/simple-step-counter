@@ -45,11 +45,11 @@ class WalkViewModel : ViewModel() {
         _stopButtonEnabled.value = _serviceRunning.value
 
         distanceWalked.addSource(stepsTaken) { steps ->
-            distanceWalked.postValue(calculateDistance(steps, _stepLength.value ?: 0))
+            distanceWalked.value = calculateDistance(steps, _stepLength.value ?: 0)
         }
 
         distanceWalked.addSource(stepLength) { length ->
-            distanceWalked.postValue(calculateDistance(_stepsTaken.value ?: 0, length))
+            distanceWalked.value = calculateDistance(_stepsTaken.value ?: 0, length)
         }
 
         repository.setOnStepCounterAvailableListener { isAvailable ->
@@ -66,11 +66,11 @@ class WalkViewModel : ViewModel() {
         }
 
         repository.setOnStepsTakenListener { steps ->
-            _stepsTaken.postValue(steps)
+            _stepsTaken.value = steps
         }
 
         repository.setOnStepLengthListener { length ->
-            _stepLength.postValue(length)
+            _stepLength.value = length
         }
     }
 

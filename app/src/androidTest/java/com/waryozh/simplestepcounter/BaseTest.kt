@@ -3,6 +3,7 @@ package com.waryozh.simplestepcounter
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.rule.ActivityTestRule
 import com.waryozh.simplestepcounter.repositories.Repository
 import org.junit.Before
@@ -16,7 +17,11 @@ abstract class BaseTest {
 
     @Rule
     @JvmField
-    val rule = ActivityTestRule(MainActivity::class.java)
+    val mainActivityTestRule = ActivityTestRule(MainActivity::class.java)
+
+    @Rule
+    @JvmField
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     protected lateinit var applicationContext: Context
     protected lateinit var prefs: SharedPreferences
@@ -25,7 +30,7 @@ abstract class BaseTest {
 
     @Before
     fun initialize() {
-        applicationContext = rule.activity.applicationContext
+        applicationContext = mainActivityTestRule.activity.applicationContext
         prefs = applicationContext.getSharedPreferences(
             PreferenceManager.getDefaultSharedPreferencesName(applicationContext),
             Context.MODE_PRIVATE

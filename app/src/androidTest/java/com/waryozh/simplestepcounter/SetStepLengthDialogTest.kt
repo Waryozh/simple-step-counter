@@ -55,23 +55,23 @@ class SetStepLengthDialogTest : BaseTest() {
 
     @Test
     fun saveInLandscapeMode() {
-        rotateScreen(rule.activity, true)
+        rotateScreen(mainActivityTestRule.activity, true)
         Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).check(ViewAssertions.matches(withNumberPickerValue(DEFAULT_STEP_LENGTH)))
 
         Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).perform(setValue(87))
         Espresso.onView(ViewMatchers.withText(R.string.ok)).perform(ViewActions.click())
 
-        rotateScreen(rule.activity, false)
+        rotateScreen(mainActivityTestRule.activity, false)
         Assert.assertEquals(87, repository.getStepLength())
     }
 
     @Test
     fun saveAfterRotate() {
-        rotateScreen(rule.activity, true)
+        rotateScreen(mainActivityTestRule.activity, true)
         Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).check(ViewAssertions.matches(withNumberPickerValue(DEFAULT_STEP_LENGTH)))
 
         Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).perform(setValue(87))
-        rotateScreen(rule.activity, false)
+        rotateScreen(mainActivityTestRule.activity, false)
         Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).check(ViewAssertions.matches(withNumberPickerValue(87)))
         Espresso.onView(ViewMatchers.withText(R.string.ok)).perform(ViewActions.click())
         Assert.assertEquals(87, repository.getStepLength())
