@@ -35,6 +35,9 @@ class MainActivity : AppCompatActivity(),
         binding.lifecycleOwner = this
 
         if (walkViewModel.shouldStartService.value == true) {
+            if (walkViewModel.stepLength.value == 0) {
+                showSetStepLengthDialog()
+            }
             startStepCounterService()
         }
     }
@@ -46,14 +49,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.action_set_step_length -> {
-            val dialog = SetStepLengthDialogFragment()
-            dialog.arguments = Bundle().apply {
-                putInt(
-                    SetStepLengthDialogFragment.STEP_LENGTH_FOR_DIALOG,
-                    walkViewModel.stepLength.value ?: 0
-                )
-            }
-            dialog.show(supportFragmentManager, SET_STEP_LENGTH_DIALOG_TAG)
+            showSetStepLengthDialog()
             true
         }
         R.id.action_reset -> {
@@ -72,6 +68,17 @@ class MainActivity : AppCompatActivity(),
 
     override fun onResetStepCounterDialogPositiveClick() {
         walkViewModel.resetStepCounter()
+    }
+
+    private fun showSetStepLengthDialog() {
+        val dialog = SetStepLengthDialogFragment()
+        dialog.arguments = Bundle().apply {
+            putInt(
+                SetStepLengthDialogFragment.STEP_LENGTH_FOR_DIALOG,
+                walkViewModel.stepLength.value ?: 0
+            )
+        }
+        dialog.show(supportFragmentManager, SET_STEP_LENGTH_DIALOG_TAG)
     }
 
     private fun startStepCounterService() {
