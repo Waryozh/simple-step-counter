@@ -71,13 +71,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun showSetStepLengthDialog() {
-        val dialog = SetStepLengthDialogFragment()
-        dialog.arguments = Bundle().apply {
-            putInt(
-                SetStepLengthDialogFragment.STEP_LENGTH_FOR_DIALOG,
-                walkViewModel.stepLength.value ?: 0
-            )
-        }
+        val dialog = SetStepLengthDialogFragment.newInstance(walkViewModel.stepLength.value ?: 0)
         dialog.show(supportFragmentManager, SET_STEP_LENGTH_DIALOG_TAG)
     }
 
