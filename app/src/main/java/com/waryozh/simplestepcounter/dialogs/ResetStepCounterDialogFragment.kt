@@ -1,9 +1,9 @@
 package com.waryozh.simplestepcounter.dialogs
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.waryozh.simplestepcounter.R
 
@@ -31,7 +31,7 @@ class ResetStepCounterDialogFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity!!.let {
-            AlertDialog.Builder(it, android.R.style.Theme_Material_Dialog_Alert)
+            AlertDialog.Builder(it, 0)
                 .setMessage(R.string.reset_step_counter_question)
                 .setPositiveButton(R.string.reset) { _, _ ->
                     listener.onResetStepCounterDialogPositiveClick()

@@ -7,7 +7,7 @@
 
     <NumberPicker
             android:id="@+id/picker_step_length"
-            android:theme="@style/AppTheme.NumberPicker"
+            android:theme="@style/NumberPicker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal" />

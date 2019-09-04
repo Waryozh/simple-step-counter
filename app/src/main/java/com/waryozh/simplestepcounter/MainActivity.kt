@@ -22,13 +22,13 @@ private const val RESET_STEP_COUNTER_DIALOG_TAG = "RESET_STEP_COUNTER_DIALOG_TAG
 class MainActivity : AppCompatActivity(),
     SetStepLengthDialogFragment.SetStepLengthDialogListener,
     ResetStepCounterDialogFragment.ResetStepCounterDialogListener {
+
     private val walkViewModel: WalkViewModel by lazy {
         ViewModelProviders.of(this, WalkViewModelFactory()).get(WalkViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
         val binding: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.walkViewModel = walkViewModel

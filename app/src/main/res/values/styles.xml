@@ -1,27 +1,32 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent</item>
         <item name="android:windowBackground">@color/color_activity_background</item>
 
-        <!-- Overflow menu background color -->
-        <item name="android:itemBackground">@color/color_activity_background</item>
+        <item name="materialButtonStyle">@style/ControlButtons</item>
+        <item name="alertDialogTheme">@style/Dialog</item>
 
-        <!-- Overflow menu items text -->
-        <item name="android:textColor">@android:color/white</item>
+        <!-- Number picker divider lines -->
+        <item name="colorControlNormal">@color/color_accent</item>
     </style>
 
-    <style name="AppTheme.NumberPicker" parent="AppTheme">
-        <item name="android:textSize">@dimen/font_large_20</item>
+    <style name="Dialog" parent="Theme.MaterialComponents.Dialog.Alert">
+        <item name="android:background">@color/color_activity_background</item>
+        <item name="buttonBarButtonStyle">@style/DialogButtons</item>
+    </style>
 
-        <!-- Number picker elements text -->
-        <item name="android:textColorPrimary">@android:color/white</item>
-        <!-- Number picker divider lines -->
-        <item name="android:colorControlNormal">@color/color_accent</item>
+    <style name="DialogButtons" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@android:color/holo_blue_light</item>
+        <item name="android:textSize">@dimen/font_medium_16</item>
+    </style>
+
+    <style name="NumberPicker" parent="Widget.Design.TextInputLayout">
+        <item name="android:textSize">@dimen/font_large_20</item>
     </style>
 
     <style name="TextAppearance">
@@ -37,7 +42,7 @@
         <item name="android:textSize">@dimen/font_large_20</item>
     </style>
 
-    <style name="ControlButtons" parent="Widget.AppCompat.Button.Colored">
+    <style name="ControlButtons" parent="Widget.MaterialComponents.Button">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">@dimen/font_large_20</item>
         <item name="android:textColor">@android:color/white</item>

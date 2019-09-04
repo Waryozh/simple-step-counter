@@ -1,11 +1,11 @@
 package com.waryozh.simplestepcounter.dialogs
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.widget.NumberPicker
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.waryozh.simplestepcounter.R
 import kotlinx.android.synthetic.main.dialog_set_step_length.view.*
@@ -64,7 +64,7 @@ class SetStepLengthDialogFragment : DialogFragment() {
                 wrapSelectorWheel = false
             }
 
-            return AlertDialog.Builder(it, android.R.style.Theme_Material_Dialog_Alert)
+            return AlertDialog.Builder(it, 0)
                 .setView(view)
                 .setTitle(R.string.set_step_length_title)
                 .setPositiveButton(R.string.ok) { _, _ ->
