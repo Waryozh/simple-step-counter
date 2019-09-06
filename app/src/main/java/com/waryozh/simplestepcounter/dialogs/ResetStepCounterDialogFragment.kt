@@ -32,7 +32,7 @@ class ResetStepCounterDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity!!.let {
             AlertDialog.Builder(it, 0)
-                .setMessage(R.string.reset_step_counter_question)
+                .setTitle(R.string.reset_step_counter_question)
                 .setPositiveButton(R.string.reset) { _, _ ->
                     listener.onResetStepCounterDialogPositiveClick()
                 }
