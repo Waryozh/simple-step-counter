@@ -34,7 +34,7 @@ class StepCounter : Service(), SensorEventListener {
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel =
-                NotificationChannel(PRIMARY_CHANNEL_ID, "Step counter notification", NotificationManager.IMPORTANCE_LOW)
+                NotificationChannel(PRIMARY_CHANNEL_ID, getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_LOW)
             notificationManager.createNotificationChannel(notificationChannel)
         }
 
@@ -67,7 +67,7 @@ class StepCounter : Service(), SensorEventListener {
             notifyAndStartForeground(getString(R.string.steps_taken, repository.getStepsTaken()))
         } else {
             repository.setStepCounterAvailable(false)
-            notifyAndStartForeground("Step Counter not available")
+            notifyAndStartForeground(getString(R.string.notification_step_counter_not_available))
             stopSelf()
             return START_NOT_STICKY
         }

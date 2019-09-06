@@ -15,4 +15,6 @@
     <string name="set_step_length">Set step length</string>
     <string name="set_step_length_title">Set your step length in centimeters</string>
     <string name="ok">OK</string>
+    <string name="notification_channel_name">Step counter notification</string>
+    <string name="notification_step_counter_not_available">Step Counter not available</string>
 </resources>
