@@ -37,15 +37,13 @@ class SetStepLengthDialogFragment : DialogFragment() {
         fun onSetStepLengthDialogPositiveClick(length: Int)
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         // Verify that the host activity implements the callback interface
         try {
             listener = context as SetStepLengthDialogListener
         } catch (e: ClassCastException) {
-            throw ClassCastException(
-                (context.toString() + " must implement SetStepLengthDialogListener")
-            )
+            throw ClassCastException(("$context must implement SetStepLengthDialogListener"))
         }
     }
 

@@ -16,16 +16,13 @@ class ResetStepCounterDialogFragment : DialogFragment() {
         fun onResetStepCounterDialogPositiveClick()
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         // Verify that the host activity implements the callback interface
         try {
             listener = context as ResetStepCounterDialogListener
         } catch (e: ClassCastException) {
-            throw ClassCastException(
-                (context.toString() +
-                        " must implement ResetStepCounterDialogListener")
-            )
+            throw ClassCastException(("$context must implement ResetStepCounterDialogListener"))
         }
     }
 
