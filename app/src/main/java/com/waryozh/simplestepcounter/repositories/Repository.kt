@@ -70,14 +70,13 @@ object Repository {
     fun getStepsTaken() = prefs.getInt(STEPS_TAKEN, 0)
 
     fun setStepsTaken(steps: Int) {
-        val stepsInPrefs = prefs.getInt(STEPS_TAKEN, 0)
         var correction = prefs.getInt(STEPS_TAKEN_CORRECTION, 0)
         with(prefs.edit()) {
             // Step Counter returns the number of steps taken by the user since the last reboot,
             // so we have to calculate the offset when starting a new step recording session.
-            if (stepsInPrefs == 0) {
+            if (correction == 0) {
                 correction = steps
-                putInt(STEPS_TAKEN_CORRECTION, steps)
+                putInt(STEPS_TAKEN_CORRECTION, correction)
             }
             putInt(STEPS_TAKEN, steps - correction)
             apply()
