@@ -26,7 +26,7 @@ class SetStepLengthDialogTest : BaseTest() {
         Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("700")))
 
         Espresso.openActionBarOverflowOrOptionsMenu(applicationContext)
-        Espresso.onView(ViewMatchers.withText(R.string.set_step_length)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withText(R.string.menu_set_step_length)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).check(ViewAssertions.matches(withNumberPickerValue(DEFAULT_STEP_LENGTH)))
     }
 

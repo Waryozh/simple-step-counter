@@ -11,7 +11,7 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import com.waryozh.simplestepcounter.MainActivity
+import com.waryozh.simplestepcounter.ui.MainActivity
 import com.waryozh.simplestepcounter.R
 import com.waryozh.simplestepcounter.repositories.Repository
 

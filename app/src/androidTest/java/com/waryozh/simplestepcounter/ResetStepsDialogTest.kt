@@ -22,7 +22,7 @@ class ResetStepsDialogTest : BaseTest() {
         Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("700")))
 
         Espresso.openActionBarOverflowOrOptionsMenu(applicationContext)
-        Espresso.onView(ViewMatchers.withText(R.string.reset_steps)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withText(R.string.menu_reset_steps)).perform(ViewActions.click())
     }
 
     @Test

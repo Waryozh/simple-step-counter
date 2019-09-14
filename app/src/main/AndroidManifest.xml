@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.waryozh.simplestepcounter">
+        package="com.waryozh.simplestepcounter">
 
     <uses-feature
             android:name="android.hardware.sensor.stepcounter"
-            android:required="true"/>
+            android:required="true" />
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
             android:name=".App"
@@ -16,18 +16,19 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.StatsActivity" />
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <service
                 android:name=".services.StepCounter"
                 android:exported="false"
-                android:label="Step Counter Service"/>
+                android:label="Step Counter Service" />
     </application>
 
 </manifest>

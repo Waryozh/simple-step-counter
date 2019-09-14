@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+            android:id="@+id/action_show_stats"
+            android:icon="@drawable/ic_equalizer_white_24dp"
+            android:title="@string/menu_statistics"
+            app:showAsAction="ifRoom" />
     <item
             android:id="@+id/action_set_step_length"
-            android:title="@string/set_step_length"/>
+            android:title="@string/menu_set_step_length" />
     <item
             android:id="@+id/action_reset"
-            android:title="@string/reset_steps"/>
+            android:title="@string/menu_reset_steps" />
 
 </menu>

@@ -1,4 +1,4 @@
-package com.waryozh.simplestepcounter
+package com.waryozh.simplestepcounter.ui
 
 import android.content.Intent
 import android.os.Build
@@ -9,6 +9,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
+import com.waryozh.simplestepcounter.R
 import com.waryozh.simplestepcounter.databinding.ActivityMainBinding
 import com.waryozh.simplestepcounter.dialogs.ResetStepCounterDialogFragment
 import com.waryozh.simplestepcounter.dialogs.SetStepLengthDialogFragment
@@ -48,6 +49,11 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.action_show_stats -> {
+            val intent = Intent(this, StatsActivity::class.java)
+            startActivity(intent)
+            true
+        }
         R.id.action_set_step_length -> {
             showSetStepLengthDialog()
             true

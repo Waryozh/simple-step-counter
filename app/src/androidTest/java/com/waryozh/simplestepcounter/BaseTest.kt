@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.rule.ActivityTestRule
 import com.waryozh.simplestepcounter.repositories.Repository
+import com.waryozh.simplestepcounter.ui.MainActivity
 import org.junit.Before
 import org.junit.Rule
 
