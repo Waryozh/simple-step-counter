@@ -13,13 +13,13 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class SetStepLengthDialogTest : BaseTest() {
     companion object {
-        private const val DEFAULT_STEPS = 1000
+        private const val DEFAULT_STEPS = 2000
         private const val DEFAULT_STEP_LENGTH = 70
     }
 
     @Before
     fun initStepLengthDialogTest() {
-        setPrefs(DEFAULT_STEPS, 0)
+        setStepsCorrection(1000)
         repository.setStepLength(DEFAULT_STEP_LENGTH)
         repository.setStepsTaken(DEFAULT_STEPS)
         Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("1000")))

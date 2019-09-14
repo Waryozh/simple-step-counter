@@ -19,6 +19,9 @@ abstract class BaseTest {
     @JvmField
     val mainActivityTestRule = ActivityTestRule(MainActivity::class.java)
 
+    // Swaps the background executor used by the Architecture Components with a different one
+    // which executes each task synchronously.
+    // Needed to invoke LiveData.setValue from the tests.
     @Rule
     @JvmField
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -40,6 +43,13 @@ abstract class BaseTest {
     protected fun setPrefs(steps: Int, correction: Int) {
         with(prefs.edit()) {
             putInt(STEPS_TAKEN, steps)
+            putInt(STEPS_TAKEN_CORRECTION, correction)
+            apply()
+        }
+    }
+
+    protected fun setStepsCorrection(correction: Int) {
+        with(prefs.edit()) {
             putInt(STEPS_TAKEN_CORRECTION, correction)
             apply()
         }

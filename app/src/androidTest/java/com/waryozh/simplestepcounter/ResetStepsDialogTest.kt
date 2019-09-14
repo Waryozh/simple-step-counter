@@ -14,17 +14,19 @@ import org.junit.runner.RunWith
 class ResetStepsDialogTest : BaseTest() {
     @Before
     fun initResetStepsDialogTest() {
-        setPrefs(1000, 0)
+        setStepsCorrection(1000)
         repository.setStepLength(70)
-        repository.setStepsTaken(1000)
+        repository.setStepsTaken(2000)
+
         Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("1000")))
         Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("700")))
+
+        Espresso.openActionBarOverflowOrOptionsMenu(applicationContext)
+        Espresso.onView(ViewMatchers.withText(R.string.reset_steps)).perform(ViewActions.click())
     }
 
     @Test
     fun cancelDialog() {
-        Espresso.openActionBarOverflowOrOptionsMenu(applicationContext)
-        Espresso.onView(ViewMatchers.withText(R.string.reset_steps)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withText(R.string.cancel)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("1000")))
         Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("700")))
@@ -33,8 +35,6 @@ class ResetStepsDialogTest : BaseTest() {
 
     @Test
     fun confirmDialog() {
-        Espresso.openActionBarOverflowOrOptionsMenu(applicationContext)
-        Espresso.onView(ViewMatchers.withText(R.string.reset_steps)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withText(R.string.reset)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("0")))
         Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("0")))
