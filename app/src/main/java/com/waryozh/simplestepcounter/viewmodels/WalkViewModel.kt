@@ -3,6 +3,7 @@ package com.waryozh.simplestepcounter.viewmodels
 import android.view.View
 import androidx.lifecycle.*
 import com.waryozh.simplestepcounter.repositories.Repository
+import com.waryozh.simplestepcounter.util.calculateDistance
 
 class WalkViewModel : ViewModel() {
     private val repository = Repository
@@ -81,8 +82,6 @@ class WalkViewModel : ViewModel() {
     fun setStepLength(length: Int) {
         repository.setStepLength(length)
     }
-
-    private fun calculateDistance(steps: Int, length: Int) = (steps * (length / 100F)).toInt()
 
     override fun onCleared() {
         super.onCleared()
