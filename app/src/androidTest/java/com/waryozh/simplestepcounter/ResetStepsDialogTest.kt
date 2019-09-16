@@ -5,6 +5,7 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -16,7 +17,9 @@ class ResetStepsDialogTest : BaseTest() {
     fun initResetStepsDialogTest() {
         setStepsCorrection(1000)
         repository.setStepLength(70)
-        repository.setStepsTaken(2000)
+        runBlocking {
+            repository.setStepsTaken(2000)
+        }
 
         Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("1000")))
         Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("700")))

@@ -62,7 +62,9 @@ abstract class BaseTest {
             apply()
         }
         runBlocking {
-            walkDao.insert(WalkDay(steps = steps))
+            val today = walkDao.getToday()!!
+            today.steps = steps
+            walkDao.update(today)
         }
     }
 

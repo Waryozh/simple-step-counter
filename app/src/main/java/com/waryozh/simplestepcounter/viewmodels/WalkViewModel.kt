@@ -4,9 +4,16 @@ import android.view.View
 import androidx.lifecycle.*
 import com.waryozh.simplestepcounter.repositories.Repository
 import com.waryozh.simplestepcounter.util.calculateDistance
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class WalkViewModel : ViewModel() {
     private val repository = Repository
+
+    private val viewModelJob = Job()
+    private val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     private var _stepsTaken = MutableLiveData<Int>()
     val stepsTaken: LiveData<Int>
@@ -67,7 +74,7 @@ class WalkViewModel : ViewModel() {
         }
 
         repository.setOnStepsTakenListener { steps ->
-            _stepsTaken.value = steps
+            _stepsTaken.postValue(steps)
         }
 
         repository.setOnStepLengthListener { length ->
@@ -76,7 +83,9 @@ class WalkViewModel : ViewModel() {
     }
 
     fun resetStepCounter() {
-        repository.resetStepCounter()
+        viewModelScope.launch {
+            repository.resetStepCounter()
+        }
     }
 
     fun setStepLength(length: Int) {
@@ -85,6 +94,7 @@ class WalkViewModel : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
+        viewModelJob.cancel()
         repository.setServiceShouldRun(true)
         repository.removeListeners()
     }

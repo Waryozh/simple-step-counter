@@ -7,7 +7,7 @@ interface WalkDatabaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(day: WalkDay): Long
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(day: WalkDay)
 
     @Query("SELECT * FROM daily_walk_data_table ORDER BY dayId DESC LIMIT 1")

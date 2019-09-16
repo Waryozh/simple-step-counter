@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import com.waryozh.simplestepcounter.ui.MainActivity
 import com.waryozh.simplestepcounter.R
 import com.waryozh.simplestepcounter.repositories.Repository
+import kotlinx.coroutines.*
 
 class StepCounter : Service(), SensorEventListener {
     companion object {
@@ -25,6 +26,9 @@ class StepCounter : Service(), SensorEventListener {
     private lateinit var notificationBuilder: NotificationCompat.Builder
 
     private val repository = Repository
+
+    private val stepCounterJob = Job()
+    private val stepCounterScope = CoroutineScope(Dispatchers.Main + stepCounterJob)
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -84,11 +88,14 @@ class StepCounter : Service(), SensorEventListener {
 
     override fun onDestroy() {
         repository.setServiceRunning(false)
+        stepCounterJob.cancel()
         super.onDestroy()
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        repository.setStepsTaken(event!!.values[0].toInt())
+        stepCounterScope.launch {
+            repository.setStepsTaken(event!!.values[0].toInt())
+        }
         notifyWithTitle(getString(R.string.steps_taken, repository.getStepsTaken()))
     }
 
