@@ -11,10 +11,16 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import com.waryozh.simplestepcounter.ui.MainActivity
+import com.waryozh.simplestepcounter.App
 import com.waryozh.simplestepcounter.R
+import com.waryozh.simplestepcounter.injection.StepCounterServiceComponent
 import com.waryozh.simplestepcounter.repositories.Repository
-import kotlinx.coroutines.*
+import com.waryozh.simplestepcounter.ui.MainActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class StepCounter : Service(), SensorEventListener {
     companion object {
@@ -22,10 +28,10 @@ class StepCounter : Service(), SensorEventListener {
         private const val NOTIFICATION_ID = 1234
     }
 
+    @Inject lateinit var repository: Repository
+
     private lateinit var notificationManager: NotificationManager
     private lateinit var notificationBuilder: NotificationCompat.Builder
-
-    private val repository = Repository
 
     private val stepCounterJob = Job()
     private val stepCounterScope = CoroutineScope(Dispatchers.Main + stepCounterJob)
@@ -34,6 +40,10 @@ class StepCounter : Service(), SensorEventListener {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
+
+        (application as App).appComponent
+            .plus(StepCounterServiceComponent.Module())
+            .inject(this)
 
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

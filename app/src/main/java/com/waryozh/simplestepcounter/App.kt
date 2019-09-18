@@ -1,18 +1,19 @@
 package com.waryozh.simplestepcounter
 
 import android.app.Application
-import android.content.Context
+import com.waryozh.simplestepcounter.injection.AppComponent
+import com.waryozh.simplestepcounter.injection.AppModule
+import com.waryozh.simplestepcounter.injection.DaggerAppComponent
 
 class App : Application() {
-    companion object {
-        private var instance: App? = null
+    lateinit var appComponent: AppComponent
 
-        fun applicationContext(): Context {
-            return instance!!.applicationContext
-        }
-    }
+    override fun onCreate() {
+        super.onCreate()
+        appComponent = DaggerAppComponent.builder()
+            .appModule(AppModule(this))
+            .build()
 
-    init {
-        instance = this
+        appComponent.inject(this)
     }
 }

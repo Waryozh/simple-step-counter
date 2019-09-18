@@ -1,7 +1,7 @@
 package com.waryozh.simplestepcounter
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.waryozh.simplestepcounter.repositories.Repository.STEPS_TAKEN_CORRECTION
+import com.waryozh.simplestepcounter.repositories.Repository.Companion.STEPS_TAKEN_CORRECTION
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test

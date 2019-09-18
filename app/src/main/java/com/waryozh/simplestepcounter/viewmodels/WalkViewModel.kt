@@ -8,10 +8,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class WalkViewModel : ViewModel() {
-    private val repository = Repository
-
+class WalkViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
     private val viewModelJob = Job()
     private val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 

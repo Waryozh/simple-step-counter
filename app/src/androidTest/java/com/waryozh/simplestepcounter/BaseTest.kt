@@ -2,25 +2,25 @@ package com.waryozh.simplestepcounter
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.room.Room
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.waryozh.simplestepcounter.database.WalkDatabase
 import com.waryozh.simplestepcounter.database.WalkDatabaseDao
-import com.waryozh.simplestepcounter.database.WalkDay
+import com.waryozh.simplestepcounter.injection.*
 import com.waryozh.simplestepcounter.repositories.Repository
-import com.waryozh.simplestepcounter.repositories.Repository.STEPS_TAKEN_CORRECTION
+import com.waryozh.simplestepcounter.repositories.Repository.Companion.STEPS_TAKEN_CORRECTION
 import com.waryozh.simplestepcounter.ui.MainActivity
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import javax.inject.Inject
 
 abstract class BaseTest {
     @Rule
     @JvmField
-    val mainActivityTestRule = ActivityTestRule(MainActivity::class.java)
+    val mainActivityTestRule = ActivityTestRule(MainActivity::class.java, false, false)
 
     // Swaps the background executor used by the Architecture Components with a different one
     // which executes each task synchronously.
@@ -30,25 +30,25 @@ abstract class BaseTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     protected lateinit var applicationContext: Context
-    protected lateinit var prefs: SharedPreferences
 
-    protected val repository = Repository
-
-    private lateinit var db: WalkDatabase
-    protected lateinit var walkDao: WalkDatabaseDao
+    @Inject lateinit var prefs: SharedPreferences
+    @Inject lateinit var db: WalkDatabase
+    @Inject lateinit var walkDao: WalkDatabaseDao
+    @Inject lateinit var repository: Repository
 
     @Before
     fun initialize() {
-        applicationContext = mainActivityTestRule.activity.applicationContext
-        prefs = applicationContext.getSharedPreferences(
-            PreferenceManager.getDefaultSharedPreferencesName(applicationContext),
-            Context.MODE_PRIVATE
-        )
-        db = Room.inMemoryDatabaseBuilder(applicationContext, WalkDatabase::class.java)
-            // Allow main thread queries, just for testing
-            .allowMainThreadQueries()
+        val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as App
+        val testAppComponent = DaggerTestAppComponent.builder()
+            .appModule(AppModule(app))
+            .prefsModule(PrefsModule())
+            .databaseModule(TestDatabaseModule())
+            .repositoryModule(RepositoryModule())
             .build()
-        walkDao = db.walkDatabaseDao
+        app.appComponent = testAppComponent
+        testAppComponent.inject(this)
+        mainActivityTestRule.launchActivity(null)
+        applicationContext = mainActivityTestRule.activity.applicationContext
     }
 
     @After

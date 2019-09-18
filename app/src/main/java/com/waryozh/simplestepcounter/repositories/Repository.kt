@@ -1,10 +1,7 @@
 package com.waryozh.simplestepcounter.repositories
 
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import androidx.annotation.VisibleForTesting
-import com.waryozh.simplestepcounter.App
-import com.waryozh.simplestepcounter.database.WalkDatabase
 import com.waryozh.simplestepcounter.database.WalkDatabaseDao
 import com.waryozh.simplestepcounter.database.WalkDay
 import com.waryozh.simplestepcounter.util.calculateDistance
@@ -12,23 +9,23 @@ import com.waryozh.simplestepcounter.util.getCurrentDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object Repository {
-    private const val IS_RUNNING = "IS_RUNNING"
-    private const val SHOULD_RUN = "SHOULD_RUN"
+@Singleton
+class Repository @Inject constructor(
+    private val prefs: SharedPreferences,
+    private val walkDao: WalkDatabaseDao
+) {
+    companion object {
+        private const val IS_RUNNING = "IS_RUNNING"
+        private const val SHOULD_RUN = "SHOULD_RUN"
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    const val STEPS_TAKEN_CORRECTION = "STEPS_TAKEN_CORRECTION"
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        const val STEPS_TAKEN_CORRECTION = "STEPS_TAKEN_CORRECTION"
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    const val STEP_LENGTH = "STEP_LENGTH"
-
-    private val prefs: SharedPreferences by lazy {
-        PreferenceManager.getDefaultSharedPreferences(App.applicationContext())
-    }
-
-    private val walkDao: WalkDatabaseDao by lazy {
-        WalkDatabase.getInstance(App.applicationContext()).walkDatabaseDao
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        const val STEP_LENGTH = "STEP_LENGTH"
     }
 
     private var today: WalkDay = runBlocking {

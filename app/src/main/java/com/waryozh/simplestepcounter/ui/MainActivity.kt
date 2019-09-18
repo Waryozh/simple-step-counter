@@ -9,13 +9,16 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
+import com.waryozh.simplestepcounter.App
 import com.waryozh.simplestepcounter.R
 import com.waryozh.simplestepcounter.databinding.ActivityMainBinding
 import com.waryozh.simplestepcounter.dialogs.ResetStepCounterDialogFragment
 import com.waryozh.simplestepcounter.dialogs.SetStepLengthDialogFragment
+import com.waryozh.simplestepcounter.injection.MainActivityComponent
 import com.waryozh.simplestepcounter.services.StepCounter
 import com.waryozh.simplestepcounter.viewmodels.WalkViewModel
 import com.waryozh.simplestepcounter.viewmodels.WalkViewModelFactory
+import javax.inject.Inject
 
 private const val SET_STEP_LENGTH_DIALOG_TAG = "SET_STEP_LENGTH_DIALOG_TAG"
 private const val RESET_STEP_COUNTER_DIALOG_TAG = "RESET_STEP_COUNTER_DIALOG_TAG"
@@ -24,12 +27,18 @@ class MainActivity : AppCompatActivity(),
     SetStepLengthDialogFragment.SetStepLengthDialogListener,
     ResetStepCounterDialogFragment.ResetStepCounterDialogListener {
 
+    @Inject lateinit var walkViewModelFactory: WalkViewModelFactory
+
     private val walkViewModel: WalkViewModel by lazy {
-        ViewModelProviders.of(this, WalkViewModelFactory()).get(WalkViewModel::class.java)
+        ViewModelProviders.of(this, walkViewModelFactory).get(WalkViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        (application as App).appComponent
+            .plus(MainActivityComponent.Module())
+            .inject(this)
 
         val binding: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.walkViewModel = walkViewModel
