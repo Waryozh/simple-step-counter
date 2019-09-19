@@ -18,5 +18,5 @@
     <string name="ok">OK</string>
     <string name="notification_channel_name">Step counter notification</string>
     <string name="notification_step_counter_not_available">Step Counter not available</string>
-    <string name="statistics_activity_toolbar">Statistics Activity</string>
+    <string name="statistics_activity_toolbar">Statistics</string>
 </resources>
