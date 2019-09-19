@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.waryozh.simplestepcounter.App
 import com.waryozh.simplestepcounter.R
@@ -17,7 +18,6 @@ import com.waryozh.simplestepcounter.dialogs.SetStepLengthDialogFragment
 import com.waryozh.simplestepcounter.injection.MainActivityComponent
 import com.waryozh.simplestepcounter.services.StepCounter
 import com.waryozh.simplestepcounter.viewmodels.WalkViewModel
-import com.waryozh.simplestepcounter.viewmodels.WalkViewModelFactory
 import javax.inject.Inject
 
 private const val SET_STEP_LENGTH_DIALOG_TAG = "SET_STEP_LENGTH_DIALOG_TAG"
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity(),
     SetStepLengthDialogFragment.SetStepLengthDialogListener,
     ResetStepCounterDialogFragment.ResetStepCounterDialogListener {
 
-    @Inject lateinit var walkViewModelFactory: WalkViewModelFactory
+    @Inject lateinit var walkViewModelFactory: ViewModelProvider.Factory
 
     private val walkViewModel: WalkViewModel by lazy {
         ViewModelProviders.of(this, walkViewModelFactory).get(WalkViewModel::class.java)
