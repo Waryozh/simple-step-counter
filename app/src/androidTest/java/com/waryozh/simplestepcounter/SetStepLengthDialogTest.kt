@@ -6,7 +6,7 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -37,7 +37,7 @@ class SetStepLengthDialogTest : BaseTest() {
     fun cancelDialog() {
         Espresso.onView(ViewMatchers.withText(R.string.cancel)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("700")))
-        Assert.assertEquals(DEFAULT_STEP_LENGTH, repository.getStepLength())
+        assertEquals(DEFAULT_STEP_LENGTH, repository.getStepLength())
     }
 
     @Test
@@ -45,7 +45,7 @@ class SetStepLengthDialogTest : BaseTest() {
         Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).perform(setValue(123))
         Espresso.onView(ViewMatchers.withText(R.string.cancel)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("700")))
-        Assert.assertEquals(DEFAULT_STEP_LENGTH, repository.getStepLength())
+        assertEquals(DEFAULT_STEP_LENGTH, repository.getStepLength())
     }
 
     @Test
@@ -53,7 +53,7 @@ class SetStepLengthDialogTest : BaseTest() {
         Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).perform(setValue(123))
         Espresso.onView(ViewMatchers.withText(R.string.ok)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("1230")))
-        Assert.assertEquals(123, repository.getStepLength())
+        assertEquals(123, repository.getStepLength())
     }
 
     @Test
@@ -65,7 +65,7 @@ class SetStepLengthDialogTest : BaseTest() {
         Espresso.onView(ViewMatchers.withText(R.string.ok)).perform(ViewActions.click())
 
         rotateScreen(mainActivityTestRule.activity, false)
-        Assert.assertEquals(87, repository.getStepLength())
+        assertEquals(87, repository.getStepLength())
     }
 
     @Test
@@ -77,6 +77,6 @@ class SetStepLengthDialogTest : BaseTest() {
         rotateScreen(mainActivityTestRule.activity, false)
         Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).check(ViewAssertions.matches(withNumberPickerValue(87)))
         Espresso.onView(ViewMatchers.withText(R.string.ok)).perform(ViewActions.click())
-        Assert.assertEquals(87, repository.getStepLength())
+        assertEquals(87, repository.getStepLength())
     }
 }
