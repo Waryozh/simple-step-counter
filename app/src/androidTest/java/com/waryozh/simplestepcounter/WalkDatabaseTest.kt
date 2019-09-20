@@ -1,20 +1,30 @@
 package com.waryozh.simplestepcounter
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.waryozh.simplestepcounter.database.WalkDatabase
 import com.waryozh.simplestepcounter.database.WalkDatabaseDao
 import com.waryozh.simplestepcounter.database.WalkDay
+import com.waryozh.simplestepcounter.testing.LiveDataTestUtil.getValue
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class WalkDatabaseTest {
+    // Swaps the background executor used by the Architecture Components with a different one
+    // which executes each task synchronously.
+    // Needed to work with LiveData from the tests.
+    @Rule
+    @JvmField
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
     private lateinit var db: WalkDatabase
     private lateinit var walkDao: WalkDatabaseDao
 
@@ -77,7 +87,7 @@ class WalkDatabaseTest {
             walkDao.insert(it)
         }
 
-        val dbDays = walkDao.getAllDays()
+        val dbDays = getValue(walkDao.getAllDays())
         assertEquals(days, dbDays)
     }
 }
