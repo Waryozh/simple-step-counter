@@ -10,6 +10,7 @@ import com.waryozh.simplestepcounter.database.WalkDatabaseDao
 import com.waryozh.simplestepcounter.injection.*
 import com.waryozh.simplestepcounter.repositories.Repository
 import com.waryozh.simplestepcounter.repositories.Repository.Companion.STEPS_TAKEN_CORRECTION
+import com.waryozh.simplestepcounter.repositories.Repository.Companion.STEP_LENGTH
 import com.waryozh.simplestepcounter.ui.MainActivity
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -31,13 +32,20 @@ abstract class BaseTest {
 
     protected lateinit var applicationContext: Context
 
-    @Inject lateinit var prefs: SharedPreferences
-    @Inject lateinit var db: WalkDatabase
-    @Inject lateinit var walkDao: WalkDatabaseDao
-    @Inject lateinit var repository: Repository
+    @Inject
+    lateinit var prefs: SharedPreferences
+
+    @Inject
+    lateinit var db: WalkDatabase
+
+    @Inject
+    lateinit var walkDao: WalkDatabaseDao
+
+    @Inject
+    lateinit var repository: Repository
 
     @Before
-    fun initialize() {
+    fun setUp() {
         val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as App
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
@@ -45,8 +53,18 @@ abstract class BaseTest {
             .databaseModule(TestDatabaseModule())
             .repositoryModule(RepositoryModule())
             .build()
+
         app.appComponent = testAppComponent
         testAppComponent.inject(this)
+
+        // Since we are using fake temporary SharedPreferences for testing,
+        // put some valid value into STEP_LENGTH before launching MainActivity
+        // so that SetStepLengthDialog would not be shown.
+        with(prefs.edit()) {
+            putInt(STEP_LENGTH, 1)
+            apply()
+        }
+
         mainActivityTestRule.launchActivity(null)
         applicationContext = mainActivityTestRule.activity.applicationContext
     }
