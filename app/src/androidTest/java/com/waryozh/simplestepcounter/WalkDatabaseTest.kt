@@ -64,4 +64,20 @@ class WalkDatabaseTest {
         val dbToday = walkDao.getToday()
         assertEquals(newDay, dbToday)
     }
+
+    @Test
+    fun getAllDays() = runBlocking {
+        val days = listOf(
+            WalkDay(dayId = 5, steps = 1000, distance = 400, date = "18.09.2019"),
+            WalkDay(dayId = 4, steps = 321, distance = 12, date = "16.09.2019"),
+            WalkDay(dayId = 1, steps = 1234, distance = 500, date = "12.09.2019")
+        )
+
+        days.forEach {
+            walkDao.insert(it)
+        }
+
+        val dbDays = walkDao.getAllDays()
+        assertEquals(days, dbDays)
+    }
 }
