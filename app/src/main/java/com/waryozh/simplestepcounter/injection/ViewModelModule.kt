@@ -2,6 +2,7 @@ package com.waryozh.simplestepcounter.injection
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.waryozh.simplestepcounter.viewmodels.StatsViewModel
 import com.waryozh.simplestepcounter.viewmodels.WalkViewModel
 import com.waryozh.simplestepcounter.viewmodels.WalkViewModelFactory
 import dagger.Binds
@@ -14,6 +15,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(WalkViewModel::class)
     abstract fun bindWalkViewModel(walkViewModel: WalkViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(StatsViewModel::class)
+    abstract fun bindStatsViewModel(walkViewModel: StatsViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: WalkViewModelFactory): ViewModelProvider.Factory

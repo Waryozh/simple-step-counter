@@ -12,4 +12,7 @@ interface WalkDatabaseDao {
 
     @Query("SELECT * FROM daily_walk_data_table ORDER BY dayId DESC LIMIT 1")
     suspend fun getToday(): WalkDay?
+
+    @Query("SELECT * FROM daily_walk_data_table ORDER BY dayId DESC")
+    suspend fun getAllDays(): List<WalkDay>
 }

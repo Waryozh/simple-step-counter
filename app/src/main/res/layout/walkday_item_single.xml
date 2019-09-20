@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+                name="walkDay"
+                type="com.waryozh.simplestepcounter.database.WalkDay" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/spacing_normal_16">
+
+        <TextView
+                android:id="@+id/tv_stats_date"
+                style="@style/TextAppearance.Subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{walkDay.date}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="20.09.2019" />
+
+        <TextView
+                android:id="@+id/tv_stats_item_steps"
+                style="@style/TextAppearance.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="@{String.valueOf(walkDay.steps)}"
+                app:layout_constraintBaseline_toBaselineOf="@+id/tv_stats_steps_label"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="2500" />
+
+        <TextView
+                android:id="@+id/tv_stats_steps_label"
+                style="@style/TextAppearance.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="@string/steps"
+                app:layout_constraintStart_toEndOf="@+id/tv_stats_item_steps"
+                app:layout_constraintTop_toBottomOf="@+id/tv_stats_date" />
+
+        <TextView
+                android:id="@+id/tv_stats_item_distance"
+                style="@style/TextAppearance.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="@{String.valueOf(walkDay.distance)}"
+                app:layout_constraintBaseline_toBaselineOf="@+id/tv_stats_distance_label"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="1735" />
+
+        <TextView
+                android:id="@+id/tv_stats_distance_label"
+                style="@style/TextAppearance.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="@string/meters"
+                app:layout_constraintStart_toEndOf="@+id/tv_stats_item_distance"
+                app:layout_constraintTop_toBottomOf="@+id/tv_stats_item_steps" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

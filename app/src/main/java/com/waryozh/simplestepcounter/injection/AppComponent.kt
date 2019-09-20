@@ -18,5 +18,7 @@ interface AppComponent {
 
     fun plus(module: MainActivityComponent.Module): MainActivityComponent
 
+    fun plus(module: StatsActivityComponent.Module): StatsActivityComponent
+
     fun plus(module: StepCounterServiceComponent.Module): StepCounterServiceComponent
 }

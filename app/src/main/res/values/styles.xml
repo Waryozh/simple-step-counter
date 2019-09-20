@@ -52,6 +52,10 @@
         <item name="android:textSize">@dimen/font_large_20</item>
     </style>
 
+    <style name="TextAppearance.Text" parent="TextAppearance">
+        <item name="android:textSize">@dimen/font_medium_16</item>
+    </style>
+
     <style name="ControlButtons" parent="Widget.MaterialComponents.Button">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">@dimen/font_large_20</item>

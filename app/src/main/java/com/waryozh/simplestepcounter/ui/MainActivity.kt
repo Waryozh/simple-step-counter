@@ -27,7 +27,8 @@ class MainActivity : AppCompatActivity(),
     SetStepLengthDialogFragment.SetStepLengthDialogListener,
     ResetStepCounterDialogFragment.ResetStepCounterDialogListener {
 
-    @Inject lateinit var walkViewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var walkViewModelFactory: ViewModelProvider.Factory
 
     private val walkViewModel: WalkViewModel by lazy {
         ViewModelProviders.of(this, walkViewModelFactory).get(WalkViewModel::class.java)
