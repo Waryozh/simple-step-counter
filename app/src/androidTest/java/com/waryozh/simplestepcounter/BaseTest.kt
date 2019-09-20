@@ -41,7 +41,7 @@ abstract class BaseTest {
         val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as App
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
-            .prefsModule(PrefsModule())
+            .prefsModule(TestPrefsModule())
             .databaseModule(TestDatabaseModule())
             .repositoryModule(RepositoryModule())
             .build()
@@ -52,7 +52,11 @@ abstract class BaseTest {
     }
 
     @After
-    fun closeDb() {
+    fun tearDown() {
+        with(prefs.edit()) {
+            clear()
+            apply()
+        }
         db.close()
     }
 
