@@ -1,5 +1,6 @@
 package com.waryozh.simplestepcounter.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
@@ -14,5 +15,5 @@ interface WalkDatabaseDao {
     suspend fun getToday(): WalkDay?
 
     @Query("SELECT * FROM daily_walk_data_table ORDER BY dayId DESC")
-    suspend fun getAllDays(): List<WalkDay>
+    fun getAllDays(): LiveData<List<WalkDay>>
 }

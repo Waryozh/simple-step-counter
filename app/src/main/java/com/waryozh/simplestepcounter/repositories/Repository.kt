@@ -154,7 +154,5 @@ class Repository @Inject constructor(
         stepLengthListener?.invoke(length)
     }
 
-    suspend fun getAllDays() = withContext(Dispatchers.IO) {
-        walkDao.getAllDays()
-    }
+    fun getAllDays() = walkDao.getAllDays()
 }
