@@ -27,10 +27,6 @@ class WalkDayAdapter : ListAdapter<WalkDay, WalkDayAdapter.WalkDayViewHolder>(Di
         }
     }
 
-    fun updateData(data: List<WalkDay>) {
-        submitList(data)
-    }
-
     class WalkDayViewHolder(private var binding: WalkdayItemSingleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: WalkDay) {
             binding.walkDay = item

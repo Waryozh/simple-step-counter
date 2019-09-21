@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.RecyclerView
 import com.waryozh.simplestepcounter.App
 import com.waryozh.simplestepcounter.R
 import com.waryozh.simplestepcounter.adapters.WalkDayAdapter
@@ -41,7 +42,15 @@ class StatsActivity : AppCompatActivity() {
         binding.statsViewModel = viewModel
         binding.lifecycleOwner = this
 
-        val daysAdapter = WalkDayAdapter()
+       val daysAdapter = WalkDayAdapter()
+
+        // Add an observer that will scroll to the beginning of the list after new data is inserted.
+        // New items are always prepended to the list, so this behaviour is sufficient.
+        daysAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                rv_walkday_list.scrollToPosition(0)
+            }
+        })
 
         val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
 
@@ -50,7 +59,9 @@ class StatsActivity : AppCompatActivity() {
             addItemDecoration(divider)
         }
 
-        viewModel.walkDays.observe(this, Observer { daysAdapter.updateData(it) })
+        viewModel.walkDays.observe(this, Observer {
+            daysAdapter.submitList(it)
+        })
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
