@@ -153,6 +153,4 @@ class Repository @Inject constructor(
         }
         stepLengthListener?.invoke(length)
     }
-
-    fun getAllDays() = walkDao.getAllDays()
 }
