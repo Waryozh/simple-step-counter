@@ -3,7 +3,7 @@ package com.waryozh.simplestepcounter
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.rule.ActivityTestRule
 import com.waryozh.simplestepcounter.database.WalkDatabase
 import com.waryozh.simplestepcounter.database.WalkDatabaseDao
@@ -47,7 +47,7 @@ abstract class BaseTest {
 
     @Before
     fun setUp() {
-        val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as App
+        val app = ApplicationProvider.getApplicationContext<App>()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
             .prefsModule(TestPrefsModule())
