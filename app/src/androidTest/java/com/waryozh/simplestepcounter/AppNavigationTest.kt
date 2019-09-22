@@ -22,6 +22,10 @@ class AppNavigationTest {
 
     @Test
     fun startStatsActivityAndPressBack() {
+        // Since we're starting with clean preferences, the app will show SetStepLengthDialog,
+        // so click OK to close the dialog.
+        Espresso.onView(ViewMatchers.withText(R.string.ok)).perform(ViewActions.click())
+
         Espresso.onView(ViewMatchers.withId(R.id.action_show_stats)).perform(ViewActions.click())
         // Check that StatsActivity was started via an Intent
         intended(hasComponent(StatsActivity::class.java.canonicalName))
