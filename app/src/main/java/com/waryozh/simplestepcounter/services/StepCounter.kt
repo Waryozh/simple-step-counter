@@ -11,6 +11,8 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import com.waryozh.simplestepcounter.App
 import com.waryozh.simplestepcounter.R
 import com.waryozh.simplestepcounter.injection.StepCounterServiceComponent
@@ -32,6 +34,10 @@ class StepCounter : Service(), SensorEventListener {
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var notificationBuilder: NotificationCompat.Builder
+
+    private val stepsTaken: LiveData<Int> by lazy {
+        Transformations.map(repository.today) { it.steps }
+    }
 
     private val stepCounterJob = Job()
     private val stepCounterScope = CoroutineScope(Dispatchers.Main + stepCounterJob)
@@ -78,7 +84,7 @@ class StepCounter : Service(), SensorEventListener {
         if (stepCounterSensor != null) {
             repository.setStepCounterAvailable(true)
             sensorManager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_UI)
-            startForeground(NOTIFICATION_ID, notifyWithTitle(getString(R.string.steps_taken, repository.getStepsTaken())))
+            startForeground(NOTIFICATION_ID, notifyWithTitle(getString(R.string.steps_taken, stepsTaken.value)))
         } else {
             repository.setStepCounterAvailable(false)
             startForeground(NOTIFICATION_ID, notifyWithTitle(getString(R.string.notification_step_counter_not_available)))
@@ -106,7 +112,7 @@ class StepCounter : Service(), SensorEventListener {
         stepCounterScope.launch {
             repository.setStepsTaken(event!!.values[0].toInt())
         }
-        notifyWithTitle(getString(R.string.steps_taken, repository.getStepsTaken()))
+        notifyWithTitle(getString(R.string.steps_taken, stepsTaken.value))
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {

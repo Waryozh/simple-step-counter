@@ -1,9 +1,11 @@
 package com.waryozh.simplestepcounter.viewmodels
 
 import android.view.View
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
 import com.waryozh.simplestepcounter.repositories.Repository
-import com.waryozh.simplestepcounter.util.calculateDistance
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -14,15 +16,12 @@ class WalkViewModel @Inject constructor(private val repository: Repository) : Vi
     private val viewModelJob = Job()
     private val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    private var _stepsTaken = MutableLiveData<Int>()
-    val stepsTaken: LiveData<Int>
-        get() = _stepsTaken
+    val stepsTaken: LiveData<Int> = Transformations.map(repository.today) { it.steps }
+    val distanceWalked: LiveData<Int> = Transformations.map(repository.today) { it.distance }
 
     private var _stepLength = MutableLiveData<Int>()
     val stepLength: LiveData<Int>
         get() = _stepLength
-
-    val distanceWalked = MediatorLiveData<Int>()
 
     private var _stepCounterNotAvailableVisibility = MutableLiveData<Int>()
     val stepCounterNotAvailableVisibility: LiveData<Int>
@@ -43,21 +42,12 @@ class WalkViewModel @Inject constructor(private val repository: Repository) : Vi
         get() = _shouldStartService
 
     init {
-        _stepsTaken.value = repository.getStepsTaken()
         _stepLength.value = repository.getStepLength()
         _serviceRunning.value = repository.getServiceRunning()
         _shouldStartService.value = (_serviceRunning.value == false) && repository.getServiceShouldRun()
         _stepCounterNotAvailableVisibility.value = View.GONE
         _startButtonEnabled.value = !(_serviceRunning.value ?: true)
         _stopButtonEnabled.value = _serviceRunning.value
-
-        distanceWalked.addSource(stepsTaken) { steps ->
-            distanceWalked.value = calculateDistance(steps, _stepLength.value ?: 0)
-        }
-
-        distanceWalked.addSource(stepLength) { length ->
-            distanceWalked.value = calculateDistance(_stepsTaken.value ?: 0, length)
-        }
 
         repository.setOnStepCounterAvailableListener { isAvailable ->
             _stepCounterNotAvailableVisibility.value = if (isAvailable) View.GONE else View.VISIBLE
@@ -72,10 +62,6 @@ class WalkViewModel @Inject constructor(private val repository: Repository) : Vi
             _stopButtonEnabled.value = (_stepCounterNotAvailableVisibility.value == View.GONE) && isRunning
         }
 
-        repository.setOnStepsTakenListener { steps ->
-            _stepsTaken.postValue(steps)
-        }
-
         repository.setOnStepLengthListener { length ->
             _stepLength.value = length
         }
@@ -88,7 +74,9 @@ class WalkViewModel @Inject constructor(private val repository: Repository) : Vi
     }
 
     fun setStepLength(length: Int) {
-        repository.setStepLength(length)
+        viewModelScope.launch {
+            repository.setStepLength(length)
+        }
     }
 
     override fun onCleared() {

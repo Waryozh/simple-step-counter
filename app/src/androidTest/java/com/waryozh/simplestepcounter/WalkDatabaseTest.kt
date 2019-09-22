@@ -47,7 +47,7 @@ class WalkDatabaseTest {
         val day = WalkDay()
         day.dayId = walkDao.insert(day)
 
-        val dbToday = walkDao.getToday()
+        val dbToday = getValue(walkDao.getToday())
         assertEquals(day, dbToday)
     }
 
@@ -59,7 +59,7 @@ class WalkDatabaseTest {
         val newDay = WalkDay(dayId = day.dayId, steps = 1000, distance = 700)
         walkDao.insert(newDay)
 
-        val dbToday = walkDao.getToday()
+        val dbToday = getValue(walkDao.getToday())
         assertEquals(newDay, dbToday)
     }
 
@@ -71,7 +71,7 @@ class WalkDatabaseTest {
         val newDay = WalkDay(dayId = day.dayId, steps = 1000, distance = 700)
         walkDao.update(newDay)
 
-        val dbToday = walkDao.getToday()
+        val dbToday = getValue(walkDao.getToday())
         assertEquals(newDay, dbToday)
     }
 

@@ -2,6 +2,7 @@ package com.waryozh.simplestepcounter.repositories
 
 import android.content.SharedPreferences
 import androidx.annotation.VisibleForTesting
+import androidx.lifecycle.LiveData
 import com.waryozh.simplestepcounter.database.WalkDatabaseDao
 import com.waryozh.simplestepcounter.database.WalkDay
 import com.waryozh.simplestepcounter.util.calculateDistance
@@ -28,21 +29,19 @@ class Repository @Inject constructor(
         const val STEP_LENGTH = "STEP_LENGTH"
     }
 
-    private var today: WalkDay = runBlocking {
-        var localToday = WalkDay()
-        val dbToday = walkDao.getToday()
-        if (dbToday == null) {
-            localToday.dayId = walkDao.insert(localToday)
-        } else {
-            localToday = dbToday
-        }
-        localToday
-    }
-
     private var stepCounterAvailableListener: ((Boolean) -> Unit)? = null
     private var stepCounterServiceRunningListener: ((Boolean) -> Unit)? = null
-    private var stepsTakenListener: ((Int) -> Unit)? = null
     private var stepLengthListener: ((Int) -> Unit)? = null
+
+    val today: LiveData<WalkDay> = walkDao.getToday()
+
+    init {
+        if (today.value == null) {
+            runBlocking {
+                walkDao.insert(WalkDay())
+            }
+        }
+    }
 
     fun setOnStepCounterAvailableListener(listener: (Boolean) -> Unit) {
         this.stepCounterAvailableListener = listener
@@ -52,10 +51,6 @@ class Repository @Inject constructor(
         this.stepCounterServiceRunningListener = listener
     }
 
-    fun setOnStepsTakenListener(listener: (Int) -> Unit) {
-        this.stepsTakenListener = listener
-    }
-
     fun setOnStepLengthListener(listener: (Int) -> Unit) {
         this.stepLengthListener = listener
     }
@@ -63,7 +58,6 @@ class Repository @Inject constructor(
     fun removeListeners() {
         this.stepCounterAvailableListener = null
         this.stepCounterServiceRunningListener = null
-        this.stepsTakenListener = null
         this.stepLengthListener = null
     }
 
@@ -91,48 +85,54 @@ class Repository @Inject constructor(
         }
     }
 
-    fun getStepsTaken() = today.steps
+    private fun setStepsCorrection(correction: Int) {
+        with(prefs.edit()) {
+            putInt(STEPS_TAKEN_CORRECTION, correction)
+            apply()
+        }
+    }
+
+    /**
+     * If Repository's today is actually today, updates its values.
+     * Otherwise, creates a new [WalkDay] and inserts it into DB.
+     *
+     * @param stepLength User's step length.
+     *
+     * @param steps Steps as reported by StepCounter sensor.
+     * Used to update correction offset if starting a new recording session.
+     * Default value means that correction offset should not be updated.
+     *
+     * @param actualSteps Steps adjusted by the value of [STEPS_TAKEN_CORRECTION] from the preferences.
+     * Default value means that today's steps should not be updated.
+     */
+    private suspend fun upsertToday(stepLength: Int, steps: Int = -1, actualSteps: Int = -1) {
+        val currentDate = getCurrentDate()
+        if (currentDate == today.value?.date) {
+            val localToday = today.value!!
+            if (actualSteps != -1) {
+                localToday.steps = actualSteps
+            }
+            localToday.distance = calculateDistance(localToday.steps, stepLength)
+            walkDao.update(localToday)
+        } else {
+            if (steps != -1) {
+                // Update correction offset, because we are starting a new recording session
+                setStepsCorrection(steps)
+            }
+            walkDao.insert(WalkDay(date = currentDate))
+        }
+    }
 
     suspend fun setStepsTaken(steps: Int) {
         withContext(Dispatchers.IO) {
             var correction = prefs.getInt(STEPS_TAKEN_CORRECTION, 0)
             if (correction == 0) {
+                // Step Counter returns the number of steps taken by the user since the last reboot,
+                // so we have to calculate the offset when starting a new step recording session.
                 correction = steps
-                with(prefs.edit()) {
-                    // Step Counter returns the number of steps taken by the user since the last reboot,
-                    // so we have to calculate the offset when starting a new step recording session.
-                    putInt(STEPS_TAKEN_CORRECTION, correction)
-                    apply()
-                }
+                setStepsCorrection(correction)
             }
-
-            val actualSteps = steps - correction
-
-            // This repository's init block guarantees that there already is a record for today in DB
-            val dbToday = walkDao.getToday()!!
-
-            val currentDate = getCurrentDate()
-
-            // If Repository's today is actually today, update its values.
-            // Otherwise, create a new day and insert it into DB.
-            if (currentDate == today.date) {
-                today.steps = actualSteps
-                today.distance = calculateDistance(actualSteps, getStepLength())
-                // Avoid unnecessary writes to DB when nothing changed
-                if ((today.dayId == dbToday.dayId) && (today.steps != dbToday.steps || today.distance != dbToday.distance)) {
-                    walkDao.update(today)
-                }
-            } else {
-                // Update correction offset, because we are starting a new recording session
-                with(prefs.edit()) {
-                    putInt(STEPS_TAKEN_CORRECTION, steps)
-                    apply()
-                }
-                today = WalkDay(date = currentDate)
-                // Do not forget to update today's id as it is autogenerated by Room on insertion
-                today.dayId = walkDao.insert(today)
-            }
-            stepsTakenListener?.invoke(actualSteps)
+            upsertToday(getStepLength(), steps, steps - correction)
         }
     }
 
@@ -146,10 +146,13 @@ class Repository @Inject constructor(
     fun getStepLength() = prefs.getInt(STEP_LENGTH, 0)
 
     // Step length is stored in centimeters
-    fun setStepLength(length: Int) {
-        with(prefs.edit()) {
-            putInt(STEP_LENGTH, length)
-            apply()
+    suspend fun setStepLength(length: Int) {
+        withContext(Dispatchers.IO) {
+            with(prefs.edit()) {
+                putInt(STEP_LENGTH, length)
+                apply()
+            }
+            upsertToday(length)
         }
         stepLengthListener?.invoke(length)
     }

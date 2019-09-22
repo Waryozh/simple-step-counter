@@ -21,8 +21,8 @@ class SetStepLengthDialogTest : BaseTest() {
     @Before
     fun initStepLengthDialogTest() {
         setStepsCorrection(1000)
-        repository.setStepLength(DEFAULT_STEP_LENGTH)
         runBlocking {
+            repository.setStepLength(DEFAULT_STEP_LENGTH)
             repository.setStepsTaken(DEFAULT_STEPS)
         }
         Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("1000")))

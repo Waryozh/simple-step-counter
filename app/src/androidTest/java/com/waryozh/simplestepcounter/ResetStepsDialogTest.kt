@@ -16,8 +16,8 @@ class ResetStepsDialogTest : BaseTest() {
     @Before
     fun initResetStepsDialogTest() {
         setStepsCorrection(1000)
-        repository.setStepLength(70)
         runBlocking {
+            repository.setStepLength(70)
             repository.setStepsTaken(2000)
         }
 
