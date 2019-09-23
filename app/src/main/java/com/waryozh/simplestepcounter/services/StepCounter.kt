@@ -1,6 +1,9 @@
 package com.waryozh.simplestepcounter.services
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.hardware.Sensor
@@ -8,10 +11,11 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Build
-import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import com.waryozh.simplestepcounter.App
 import com.waryozh.simplestepcounter.R
@@ -24,7 +28,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class StepCounter : Service(), SensorEventListener {
+class StepCounter : LifecycleService(), SensorEventListener {
     companion object {
         private const val PRIMARY_CHANNEL_ID = "primary_notification_channel"
         private const val NOTIFICATION_ID = 1234
@@ -42,14 +46,16 @@ class StepCounter : Service(), SensorEventListener {
     private val stepCounterJob = Job()
     private val stepCounterScope = CoroutineScope(Dispatchers.Main + stepCounterJob)
 
-    override fun onBind(intent: Intent?): IBinder? = null
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
         (application as App).appComponent
             .plus(StepCounterServiceComponent.Module())
             .inject(this)
+
+        stepsTaken.observe(this, Observer {
+            notifyWithTitle(getString(R.string.steps_taken, stepsTaken.value))
+        })
 
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
