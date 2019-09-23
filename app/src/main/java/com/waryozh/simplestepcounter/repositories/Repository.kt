@@ -137,10 +137,10 @@ class Repository @Inject constructor(
     }
 
     suspend fun resetStepCounter() {
-        // When resetting the counter, set the STEPS_TAKEN to the current value of STEPS_TAKEN_CORRECTION.
-        // That way the effective value of STEPS_TAKEN will become zero
-        // and STEPS_TAKEN_CORRECTION will be properly updated when a new session is started.
-        setStepsTaken(prefs.getInt(STEPS_TAKEN_CORRECTION, 0))
+        // When resetting the counter, set STEPS_TAKEN_CORRECTION to zero
+        // so that a new session would be started on next sensor event.
+        setStepsCorrection(0)
+        upsertToday(getStepLength(), 0, 0)
     }
 
     fun getStepLength() = prefs.getInt(STEP_LENGTH, 0)

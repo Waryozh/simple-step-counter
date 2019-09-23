@@ -27,10 +27,14 @@ class SharedPreferencesTest : BaseTest() {
     }
 
     @Test
-    fun resetSteps() = runBlocking {
+    fun resetStepsAndStartNewSession() = runBlocking {
         setPrefs(1000, 500)
         repository.resetStepCounter()
-        assertEquals(500, prefs.getInt(STEPS_TAKEN_CORRECTION, -1))
+        assertEquals(0, prefs.getInt(STEPS_TAKEN_CORRECTION, -1))
+        assertEquals(0, getValue(walkDao.getToday()).steps)
+
+        repository.setStepsTaken(2000)
+        assertEquals(2000, prefs.getInt(STEPS_TAKEN_CORRECTION, -1))
         assertEquals(0, getValue(walkDao.getToday()).steps)
     }
 }
