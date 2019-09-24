@@ -12,7 +12,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class SetStepLengthDialogTest : BaseTest() {
+class SetStepLengthDialogTest : MainActivityBaseTest() {
     companion object {
         private const val DEFAULT_STEPS = 2000
         private const val DEFAULT_STEP_LENGTH = 70
@@ -58,23 +58,23 @@ class SetStepLengthDialogTest : BaseTest() {
 
     @Test
     fun saveInLandscapeMode() {
-        rotateScreen(mainActivityTestRule.activity, true)
+        rotateScreen(activityTestRule.activity, true)
         Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).check(ViewAssertions.matches(withNumberPickerValue(DEFAULT_STEP_LENGTH)))
 
         Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).perform(setValue(87))
         Espresso.onView(ViewMatchers.withText(R.string.ok)).perform(ViewActions.click())
 
-        rotateScreen(mainActivityTestRule.activity, false)
+        rotateScreen(activityTestRule.activity, false)
         assertEquals(87, repository.getStepLength())
     }
 
     @Test
     fun saveAfterRotate() {
-        rotateScreen(mainActivityTestRule.activity, true)
+        rotateScreen(activityTestRule.activity, true)
         Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).check(ViewAssertions.matches(withNumberPickerValue(DEFAULT_STEP_LENGTH)))
 
         Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).perform(setValue(87))
-        rotateScreen(mainActivityTestRule.activity, false)
+        rotateScreen(activityTestRule.activity, false)
         Espresso.onView(ViewMatchers.withId(R.id.picker_step_length)).check(ViewAssertions.matches(withNumberPickerValue(87)))
         Espresso.onView(ViewMatchers.withText(R.string.ok)).perform(ViewActions.click())
         assertEquals(87, repository.getStepLength())

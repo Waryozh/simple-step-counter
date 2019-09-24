@@ -9,7 +9,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class SharedPreferencesTest : BaseTest() {
+class SharedPreferencesTest : MainActivityBaseTest() {
     @Test
     fun newStepSession() = runBlocking {
         setPrefs(0, 0)
