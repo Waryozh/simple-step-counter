@@ -53,10 +53,6 @@ class StepCounter : LifecycleService(), SensorEventListener {
             .plus(StepCounterServiceComponent.Module())
             .inject(this)
 
-        stepsTaken.observe(this, Observer {
-            notifyWithTitle(getString(R.string.steps_taken, stepsTaken.value))
-        })
-
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel =
@@ -88,6 +84,9 @@ class StepCounter : LifecycleService(), SensorEventListener {
         val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         val stepCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
         if (stepCounterSensor != null) {
+            stepsTaken.observe(this, Observer {
+                notifyWithTitle(getString(R.string.steps_taken, stepsTaken.value))
+            })
             repository.setStepCounterAvailable(true)
             sensorManager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_UI)
             startForeground(NOTIFICATION_ID, notifyWithTitle(getString(R.string.steps_taken, stepsTaken.value)))
