@@ -10,7 +10,7 @@ import com.waryozh.simplestepcounter.databinding.WalkdayItemSingleBinding
 
 class WalkDayAdapter : ListAdapter<WalkDay, WalkDayAdapter.WalkDayViewHolder>(DiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WalkDayViewHolder {
-        return WalkDayViewHolder(WalkdayItemSingleBinding.inflate(LayoutInflater.from(parent.context)))
+        return WalkDayViewHolder(WalkdayItemSingleBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: WalkDayViewHolder, position: Int) {
