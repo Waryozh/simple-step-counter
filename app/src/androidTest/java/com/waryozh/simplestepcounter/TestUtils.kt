@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.view.View
 import android.widget.NumberPicker
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers
@@ -37,5 +38,17 @@ fun setValue(value: Int): ViewAction = object : ViewAction {
 
     override fun perform(uiController: UiController, view: View) {
         (view as NumberPicker).value = value
+    }
+}
+
+fun atPosition(position: Int, itemMatcher: Matcher<View>): Matcher<View> = object : TypeSafeMatcher<View>() {
+    override fun describeTo(description: Description) {
+        description.appendText("Position should be $position")
+        itemMatcher.describeTo(description)
+    }
+
+    override fun matchesSafely(item: View): Boolean {
+        val viewHolder = (item as RecyclerView).findViewHolderForAdapterPosition(position)
+        return itemMatcher.matches(viewHolder?.itemView)
     }
 }
