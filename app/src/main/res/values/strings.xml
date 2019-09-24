@@ -11,13 +11,13 @@
     <string name="menu_reset_steps">Reset steps</string>
     <string name="menu_set_step_length">Set step length</string>
     <string name="menu_statistics">Statistics</string>
-    <string name="menu_clear_database">Clear database</string>
+    <string name="menu_clear_database">Clear statistics</string>
     <string name="reset_step_counter_question">Reset Step Counter?</string>
     <string name="reset">Reset</string>
     <string name="cancel">Cancel</string>
     <string name="set_step_length_title">Set your step length in centimeters</string>
     <string name="ok">OK</string>
-    <string name="clear_db_question">Clear database?</string>
+    <string name="clear_db_question">Clear statistics?</string>
     <string name="clear">Clear</string>
     <string name="notification_channel_name">Step counter notification</string>
     <string name="notification_step_counter_not_available">Step Counter not available</string>
