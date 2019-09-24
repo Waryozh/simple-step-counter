@@ -12,7 +12,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:padding="@dimen/spacing_normal_16">
 
         <TextView
@@ -20,52 +20,66 @@
                 style="@style/TextAppearance.Subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_small_8"
                 android:text="@{walkDay.date}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="20.09.2019" />
+
+        <View
+                android:id="@+id/divider_vertical"
+                android:layout_width="2dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/spacing_small_8"
+                android:background="@color/color_accent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_stats_date" />
 
         <TextView
                 android:id="@+id/tv_stats_item_steps"
                 style="@style/TextAppearance.Text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:padding="@dimen/spacing_tiny_4"
                 android:text="@{String.valueOf(walkDay.steps)}"
-                app:layout_constraintBaseline_toBaselineOf="@+id/tv_stats_steps_label"
+                app:layout_constraintEnd_toStartOf="@+id/divider_vertical"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/divider_vertical"
                 tools:text="2500" />
 
         <TextView
                 android:id="@+id/tv_stats_steps_label"
-                style="@style/TextAppearance.Text"
+                style="@style/TextAppearance.SmallText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
                 android:text="@string/steps"
-                app:layout_constraintStart_toEndOf="@+id/tv_stats_item_steps"
-                app:layout_constraintTop_toBottomOf="@+id/tv_stats_date" />
+                app:layout_constraintEnd_toEndOf="@+id/tv_stats_item_steps"
+                app:layout_constraintStart_toStartOf="@+id/tv_stats_item_steps"
+                app:layout_constraintTop_toBottomOf="@+id/tv_stats_item_steps" />
 
         <TextView
                 android:id="@+id/tv_stats_item_distance"
                 style="@style/TextAppearance.Text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:padding="@dimen/spacing_tiny_4"
                 android:text="@{String.valueOf(walkDay.distance)}"
-                app:layout_constraintBaseline_toBaselineOf="@+id/tv_stats_distance_label"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/divider_vertical"
+                app:layout_constraintTop_toTopOf="@+id/divider_vertical"
                 tools:text="1735" />
 
         <TextView
                 android:id="@+id/tv_stats_distance_label"
-                style="@style/TextAppearance.Text"
+                style="@style/TextAppearance.SmallText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
                 android:text="@string/meters"
-                app:layout_constraintStart_toEndOf="@+id/tv_stats_item_distance"
-                app:layout_constraintTop_toBottomOf="@+id/tv_stats_item_steps" />
+                app:layout_constraintEnd_toEndOf="@+id/tv_stats_item_distance"
+                app:layout_constraintStart_toStartOf="@+id/tv_stats_item_distance"
+                app:layout_constraintTop_toBottomOf="@+id/tv_stats_item_distance" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

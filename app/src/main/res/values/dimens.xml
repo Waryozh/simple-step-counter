@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="spacing_tiny_4">4dp</dimen>
+    <dimen name="spacing_small_8">8dp</dimen>
     <dimen name="spacing_normal_16">16dp</dimen>
     <dimen name="spacing_huge_64">64dp</dimen>
 
-    <dimen name="font_medium_16">16sp</dimen>
+    <dimen name="font_small_16">14sp</dimen>
+    <dimen name="font_medium_18">18sp</dimen>
     <dimen name="font_large_20">20sp</dimen>
     <dimen name="font_huge_32">32sp</dimen>
 </resources>

@@ -32,7 +32,7 @@
 
     <style name="DialogButtons" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@android:color/holo_blue_light</item>
-        <item name="android:textSize">@dimen/font_medium_16</item>
+        <item name="android:textSize">@dimen/font_medium_18</item>
     </style>
 
     <style name="NumberPicker" parent="Widget.Design.TextInputLayout">
@@ -53,7 +53,11 @@
     </style>
 
     <style name="TextAppearance.Text" parent="TextAppearance">
-        <item name="android:textSize">@dimen/font_medium_16</item>
+        <item name="android:textSize">@dimen/font_medium_18</item>
+    </style>
+
+    <style name="TextAppearance.SmallText" parent="TextAppearance">
+        <item name="android:textSize">@dimen/font_small_16</item>
     </style>
 
     <style name="ControlButtons" parent="Widget.MaterialComponents.Button">
