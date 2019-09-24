@@ -76,7 +76,7 @@ class WalkDatabaseTest {
     }
 
     @Test
-    fun getAllDays() = runBlocking {
+    fun getAllDaysThenDeleteAllDays() = runBlocking {
         val days = listOf(
             WalkDay(dayId = 5, steps = 1000, distance = 400, date = "18.09.2019"),
             WalkDay(dayId = 4, steps = 321, distance = 12, date = "16.09.2019"),
@@ -87,7 +87,11 @@ class WalkDatabaseTest {
             walkDao.insert(it)
         }
 
-        val dbDays = getValue(walkDao.getAllDays())
+        var dbDays = getValue(walkDao.getAllDays())
         assertEquals(days, dbDays)
+
+        walkDao.deleteAllDays()
+        dbDays = getValue(walkDao.getAllDays())
+        assertEquals(emptyList<WalkDay>(), dbDays)
     }
 }

@@ -7,4 +7,8 @@ import javax.inject.Singleton
 @Singleton
 class StatsRepository @Inject constructor(private val walkDao: WalkDatabaseDao) {
     fun getAllDays() = walkDao.getAllDays()
+
+    suspend fun clearDatabase() {
+        walkDao.deleteAllDays()
+    }
 }

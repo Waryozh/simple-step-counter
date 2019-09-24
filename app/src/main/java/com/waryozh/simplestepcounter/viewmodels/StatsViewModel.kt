@@ -26,6 +26,12 @@ class StatsViewModel @Inject constructor(private val repository: StatsRepository
         }
     }
 
+    fun clearDatabase() {
+        viewModelScope.launch {
+            repository.clearDatabase()
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()

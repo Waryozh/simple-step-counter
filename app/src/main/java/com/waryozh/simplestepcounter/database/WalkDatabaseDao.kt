@@ -11,6 +11,9 @@ interface WalkDatabaseDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(day: WalkDay)
 
+    @Query("DELETE FROM daily_walk_data_table")
+    suspend fun deleteAllDays()
+
     @Query("SELECT * FROM daily_walk_data_table ORDER BY dayId DESC LIMIT 1")
     fun getToday(): LiveData<WalkDay>
 

@@ -1,6 +1,7 @@
 package com.waryozh.simplestepcounter.ui
 
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -13,12 +14,15 @@ import com.waryozh.simplestepcounter.App
 import com.waryozh.simplestepcounter.R
 import com.waryozh.simplestepcounter.adapters.WalkDayAdapter
 import com.waryozh.simplestepcounter.databinding.ActivityStatsBinding
+import com.waryozh.simplestepcounter.dialogs.ClearDatabaseDialogFragment
 import com.waryozh.simplestepcounter.injection.StatsActivityComponent
 import com.waryozh.simplestepcounter.viewmodels.StatsViewModel
 import kotlinx.android.synthetic.main.activity_stats.*
 import javax.inject.Inject
 
-class StatsActivity : AppCompatActivity() {
+private const val CLEAR_DATABASE_DIALOG_TAG = "CLEAR_DATABASE_DIALOG_TAG"
+
+class StatsActivity : AppCompatActivity(), ClearDatabaseDialogFragment.ClearDatabaseDialogListener {
 
     @Inject
     lateinit var walkViewModelFactory: ViewModelProvider.Factory
@@ -42,7 +46,7 @@ class StatsActivity : AppCompatActivity() {
         binding.statsViewModel = viewModel
         binding.lifecycleOwner = this
 
-       val daysAdapter = WalkDayAdapter()
+        val daysAdapter = WalkDayAdapter()
 
         // Add an observer that will scroll to the beginning of the list after new data is inserted.
         // New items are always prepended to the list, so this behaviour is sufficient.
@@ -64,12 +68,27 @@ class StatsActivity : AppCompatActivity() {
         })
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return if (item?.itemId == android.R.id.home) {
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_stats, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        android.R.id.home -> {
             finish()
             true
-        } else {
-            super.onOptionsItemSelected(item)
         }
+        R.id.action_clear_database -> {
+            ClearDatabaseDialogFragment().show(
+                supportFragmentManager,
+                CLEAR_DATABASE_DIALOG_TAG
+            )
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
+    }
+
+    override fun onClearDatabaseDialogPositiveClick() {
+        viewModel.clearDatabase()
     }
 }

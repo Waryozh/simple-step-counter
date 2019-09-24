@@ -40,7 +40,7 @@ class StepCounter : LifecycleService(), SensorEventListener {
     private lateinit var notificationBuilder: NotificationCompat.Builder
 
     private val stepsTaken: LiveData<Int> by lazy {
-        Transformations.map(repository.today) { it.steps }
+        Transformations.map(repository.today) { it?.steps ?: 0 }
     }
 
     private val stepCounterJob = Job()

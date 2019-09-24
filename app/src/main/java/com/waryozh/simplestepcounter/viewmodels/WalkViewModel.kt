@@ -16,8 +16,8 @@ class WalkViewModel @Inject constructor(private val repository: Repository) : Vi
     private val viewModelJob = Job()
     private val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    val stepsTaken: LiveData<Int> = Transformations.map(repository.today) { it.steps }
-    val distanceWalked: LiveData<Int> = Transformations.map(repository.today) { it.distance }
+    val stepsTaken: LiveData<Int> = Transformations.map(repository.today) { it?.steps ?: 0 }
+    val distanceWalked: LiveData<Int> = Transformations.map(repository.today) { it?.distance ?: 0 }
 
     private var _stepLength = MutableLiveData<Int>()
     val stepLength: LiveData<Int>
