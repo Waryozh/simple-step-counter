@@ -1,9 +1,11 @@
 package com.waryozh.simplestepcounter
 
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -21,26 +23,26 @@ class ResetStepsDialogTest : MainActivityBaseTest() {
             repository.setStepsTaken(2000)
         }
 
-        Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("1000")))
-        Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("700")))
+        onView(withId(R.id.tv_steps_taken)).check(matches(withText("1000")))
+        onView(withId(R.id.tv_distance_walked)).check(matches(withText("700")))
 
         Espresso.openActionBarOverflowOrOptionsMenu(applicationContext)
-        Espresso.onView(ViewMatchers.withText(R.string.menu_reset_steps)).perform(ViewActions.click())
+        onView(withText(R.string.menu_reset_steps)).perform(click())
     }
 
     @Test
     fun cancelDialog() {
-        Espresso.onView(ViewMatchers.withText(R.string.cancel)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("1000")))
-        Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("700")))
+        onView(withText(R.string.cancel)).perform(click())
+        onView(withId(R.id.tv_steps_taken)).check(matches(withText("1000")))
+        onView(withId(R.id.tv_distance_walked)).check(matches(withText("700")))
         assertEquals(70, repository.getStepLength())
     }
 
     @Test
     fun confirmDialog() {
-        Espresso.onView(ViewMatchers.withText(R.string.reset)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.tv_steps_taken)).check(ViewAssertions.matches(ViewMatchers.withText("0")))
-        Espresso.onView(ViewMatchers.withId(R.id.tv_distance_walked)).check(ViewAssertions.matches(ViewMatchers.withText("0")))
+        onView(withText(R.string.reset)).perform(click())
+        onView(withId(R.id.tv_steps_taken)).check(matches(withText("0")))
+        onView(withId(R.id.tv_distance_walked)).check(matches(withText("0")))
         assertEquals(70, repository.getStepLength())
     }
 }
