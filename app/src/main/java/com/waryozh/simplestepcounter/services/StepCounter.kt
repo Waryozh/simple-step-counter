@@ -63,7 +63,7 @@ class StepCounter : LifecycleService(), SensorEventListener {
         val contentPendingIntent = PendingIntent.getActivity(
             this,
             NOTIFICATION_ID,
-            Intent(this, MainActivity::class.java).apply { setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP and Intent.FLAG_ACTIVITY_SINGLE_TOP) },
+            Intent(this, MainActivity::class.java),
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
