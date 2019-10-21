@@ -21,6 +21,7 @@ class Repository @Inject constructor(
     companion object {
         private const val IS_RUNNING = "IS_RUNNING"
         private const val SHOULD_RUN = "SHOULD_RUN"
+        private const val STEPS_ON_STOP = "STEPS_ON_STOP"
 
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
         const val STEPS_TAKEN_CORRECTION = "STEPS_TAKEN_CORRECTION"
@@ -71,6 +72,13 @@ class Repository @Inject constructor(
         with(prefs.edit()) {
             putBoolean(IS_RUNNING, isRunning)
             putBoolean(SHOULD_RUN, false)
+            // Step Counter sensor records all steps taken since the last device reboot,
+            // but we want to show only the steps taken while our service was running.
+            // When stopping the recording session, set STEPS_ON_STOP to the current number of steps.
+            // It will be used to calculate the new offset when starting a new recording session.
+            if (!isRunning) {
+                putInt(STEPS_ON_STOP, today.value!!.steps)
+            }
             apply()
         }
         stepCounterServiceRunningListener?.invoke(isRunning)
@@ -131,6 +139,19 @@ class Repository @Inject constructor(
                 // so we have to calculate the offset when starting a new step recording session.
                 correction = steps
                 setStepsCorrection(correction)
+            } else {
+                val stepsOnStop = prefs.getInt(STEPS_ON_STOP, 0)
+                if (stepsOnStop != 0) {
+                    // Step Counter sensor might have detected some steps while our service was stopped,
+                    // so to ignore those steps, we recalculate the offset using STEPS_ON_STOP —
+                    // the number of steps recorded on service stop.
+                    correction = steps - stepsOnStop
+                    with(prefs.edit()) {
+                        putInt(STEPS_ON_STOP, 0)
+                        putInt(STEPS_TAKEN_CORRECTION, steps - stepsOnStop)
+                        apply()
+                    }
+                }
             }
             upsertToday(getStepLength(), steps, steps - correction)
         }
