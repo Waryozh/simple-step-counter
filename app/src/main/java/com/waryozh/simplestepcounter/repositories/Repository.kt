@@ -3,6 +3,7 @@ package com.waryozh.simplestepcounter.repositories
 import android.content.SharedPreferences
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.waryozh.simplestepcounter.database.WalkDatabaseDao
 import com.waryozh.simplestepcounter.database.WalkDay
 import com.waryozh.simplestepcounter.util.calculateDistance
@@ -37,11 +38,17 @@ class Repository @Inject constructor(
     val today: LiveData<WalkDay> = walkDao.getToday()
 
     init {
-        if (today.value == null) {
-            runBlocking {
-                walkDao.insert(WalkDay())
+        today.observeForever(object : Observer<WalkDay> {
+            override fun onChanged(day: WalkDay?) {
+                if (day == null) {
+                    runBlocking {
+                        walkDao.insert(WalkDay())
+                    }
+                } else {
+                    today.removeObserver(this)
+                }
             }
-        }
+        })
     }
 
     fun setOnStepCounterAvailableListener(listener: (Boolean) -> Unit) {
@@ -76,7 +83,7 @@ class Repository @Inject constructor(
             // but we want to show only the steps taken while our service was running.
             // When stopping the recording session, set STEPS_ON_STOP to the current number of steps.
             // It will be used to calculate the new offset when starting a new recording session.
-            if (!isRunning) {
+            if (!isRunning && today.value != null) {
                 putInt(STEPS_ON_STOP, today.value!!.steps)
             }
             apply()
