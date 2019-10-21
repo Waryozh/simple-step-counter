@@ -38,6 +38,7 @@ class StepCounter : LifecycleService(), SensorEventListener {
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var notificationBuilder: NotificationCompat.Builder
+    private lateinit var sensorManager: SensorManager
 
     private val stepsTaken: LiveData<Int> by lazy {
         Transformations.map(repository.today) { it?.steps ?: 0 }
@@ -81,7 +82,7 @@ class StepCounter : LifecycleService(), SensorEventListener {
 
         repository.setServiceRunning(true)
 
-        val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         val stepCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
         if (stepCounterSensor != null) {
             stepsTaken.observe(this, Observer {
@@ -110,6 +111,7 @@ class StepCounter : LifecycleService(), SensorEventListener {
     override fun onDestroy() {
         repository.setServiceRunning(false)
         stepCounterJob.cancel()
+        sensorManager.unregisterListener(this)
         super.onDestroy()
     }
 
