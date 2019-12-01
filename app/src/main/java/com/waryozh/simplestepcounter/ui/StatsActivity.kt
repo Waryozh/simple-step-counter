@@ -25,15 +25,14 @@ private const val CLEAR_DATABASE_DIALOG_TAG = "CLEAR_DATABASE_DIALOG_TAG"
 class StatsActivity : AppCompatActivity(), ClearDatabaseDialogFragment.ClearDatabaseDialogListener {
 
     @Inject
-    lateinit var walkViewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel: StatsViewModel by lazy {
-        ViewModelProviders.of(this, walkViewModelFactory).get(StatsViewModel::class.java)
+        ViewModelProviders.of(this, viewModelFactory).get(StatsViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_stats)
 
         (application as App).appComponent
             .plus(StatsActivityComponent.Module())
