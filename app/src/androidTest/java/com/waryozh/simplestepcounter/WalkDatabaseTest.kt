@@ -7,7 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.waryozh.simplestepcounter.database.WalkDatabase
 import com.waryozh.simplestepcounter.database.WalkDatabaseDao
 import com.waryozh.simplestepcounter.database.WalkDay
-import com.waryozh.simplestepcounter.testing.LiveDataTestUtil.getValue
+import com.waryozh.simplestepcounter.testing.getOrAwaitValue
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -47,7 +47,7 @@ class WalkDatabaseTest {
         val day = WalkDay()
         day.dayId = walkDao.insert(day)
 
-        val dbToday = getValue(walkDao.getToday())
+        val dbToday = walkDao.getToday().getOrAwaitValue()
         assertEquals(day, dbToday)
     }
 
@@ -59,7 +59,7 @@ class WalkDatabaseTest {
         val newDay = WalkDay(dayId = day.dayId, steps = 1000, distance = 700)
         walkDao.insert(newDay)
 
-        val dbToday = getValue(walkDao.getToday())
+        val dbToday = walkDao.getToday().getOrAwaitValue()
         assertEquals(newDay, dbToday)
     }
 
@@ -71,7 +71,7 @@ class WalkDatabaseTest {
         val newDay = WalkDay(dayId = day.dayId, steps = 1000, distance = 700)
         walkDao.update(newDay)
 
-        val dbToday = getValue(walkDao.getToday())
+        val dbToday = walkDao.getToday().getOrAwaitValue()
         assertEquals(newDay, dbToday)
     }
 
@@ -87,11 +87,11 @@ class WalkDatabaseTest {
             walkDao.insert(it)
         }
 
-        var dbDays = getValue(walkDao.getAllDays())
+        var dbDays = walkDao.getAllDays().getOrAwaitValue()
         assertEquals(days, dbDays)
 
         walkDao.deleteAllDays()
-        dbDays = getValue(walkDao.getAllDays())
+        dbDays = walkDao.getAllDays().getOrAwaitValue()
         assertEquals(emptyList<WalkDay>(), dbDays)
     }
 }

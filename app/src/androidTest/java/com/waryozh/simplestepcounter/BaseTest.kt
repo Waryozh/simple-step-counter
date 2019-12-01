@@ -12,7 +12,7 @@ import com.waryozh.simplestepcounter.injection.TestDatabaseModule
 import com.waryozh.simplestepcounter.injection.TestPrefsModule
 import com.waryozh.simplestepcounter.repositories.Repository.Companion.STEPS_TAKEN_CORRECTION
 import com.waryozh.simplestepcounter.repositories.Repository.Companion.STEP_LENGTH
-import com.waryozh.simplestepcounter.testing.LiveDataTestUtil.getValue
+import com.waryozh.simplestepcounter.testing.getOrAwaitValue
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -73,7 +73,7 @@ abstract class BaseTest {
             apply()
         }
         runBlocking {
-            val today = getValue(walkDao.getToday())
+            val today = walkDao.getToday().getOrAwaitValue()
             today.steps = steps
             walkDao.update(today)
         }
