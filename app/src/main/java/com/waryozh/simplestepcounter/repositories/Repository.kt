@@ -20,9 +20,14 @@ class Repository @Inject constructor(
     private val walkDao: WalkDatabaseDao
 ) {
     companion object {
-        private const val IS_RUNNING = "IS_RUNNING"
-        private const val SHOULD_RUN = "SHOULD_RUN"
-        private const val STEPS_ON_STOP = "STEPS_ON_STOP"
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        const val IS_RUNNING = "IS_RUNNING"
+
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        const val SHOULD_RUN = "SHOULD_RUN"
+
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        const val STEPS_ON_STOP = "STEPS_ON_STOP"
 
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
         const val STEPS_TAKEN_CORRECTION = "STEPS_TAKEN_CORRECTION"
@@ -107,39 +112,22 @@ class Repository @Inject constructor(
         }
     }
 
-    /**
-     * If Repository's today is actually today, updates its values.
-     * Otherwise, creates a new [WalkDay] and inserts it into DB.
-     *
-     * @param stepLength User's step length.
-     *
-     * @param steps Steps as reported by StepCounter sensor.
-     * Used to update correction offset if starting a new recording session.
-     * Default value means that correction offset should not be updated.
-     *
-     * @param actualSteps Steps adjusted by the value of [STEPS_TAKEN_CORRECTION] from the preferences.
-     * Default value means that today's steps should not be updated.
-     */
-    private suspend fun upsertToday(stepLength: Int, steps: Int = -1, actualSteps: Int = -1) {
+    private suspend fun upsertToday(localToday: WalkDay, preserveSteps: Boolean = false) {
         val currentDate = getCurrentDate()
-        if (currentDate == today.value?.date) {
-            val localToday = today.value!!
-            if (actualSteps != -1) {
-                localToday.steps = actualSteps
-            }
-            localToday.distance = calculateDistance(localToday.steps, stepLength)
+        if (currentDate == localToday.date) {
             walkDao.update(localToday)
         } else {
-            if (steps != -1) {
-                // Update correction offset, because we are starting a new recording session
-                setStepsCorrection(steps)
+            if (preserveSteps) {
+                walkDao.insert(WalkDay(steps = localToday.steps, distance = localToday.distance, date = currentDate))
+            } else {
+                walkDao.insert(WalkDay(date = currentDate))
             }
-            walkDao.insert(WalkDay(date = currentDate))
         }
     }
 
     suspend fun setStepsTaken(steps: Int) {
         withContext(Dispatchers.IO) {
+            val repoIsOutdated = today.value?.date != getCurrentDate()
             var correction = prefs.getInt(STEPS_TAKEN_CORRECTION, 0)
             if (correction == 0) {
                 // Step Counter returns the number of steps taken by the user since the last reboot,
@@ -148,19 +136,27 @@ class Repository @Inject constructor(
                 setStepsCorrection(correction)
             } else {
                 val stepsOnStop = prefs.getInt(STEPS_ON_STOP, 0)
-                if (stepsOnStop != 0) {
+                if (stepsOnStop == 0) {
+                    if (repoIsOutdated) {
+                        correction += today.value!!.steps
+                        setStepsCorrection(correction)
+                    }
+                } else {
                     // Step Counter sensor might have detected some steps while our service was stopped,
-                    // so to ignore those steps, we recalculate the offset using STEPS_ON_STOP —
-                    // the number of steps recorded on service stop.
-                    correction = steps - stepsOnStop
+                    // so to ignore those steps, we recalculate the offset using STEPS_ON_STOP,
+                    // which is the number of steps recorded on service stop.
+                    correction = if (repoIsOutdated) correction + today.value!!.steps else steps - stepsOnStop
                     with(prefs.edit()) {
                         putInt(STEPS_ON_STOP, 0)
-                        putInt(STEPS_TAKEN_CORRECTION, steps - stepsOnStop)
+                        putInt(STEPS_TAKEN_CORRECTION, correction)
                         apply()
                     }
                 }
             }
-            upsertToday(getStepLength(), steps, steps - correction)
+
+            val actualSteps = steps - correction
+            val distance = calculateDistance(actualSteps, getStepLength())
+            upsertToday(today.value!!.copy(steps = actualSteps, distance = distance), preserveSteps = true)
         }
     }
 
@@ -168,7 +164,7 @@ class Repository @Inject constructor(
         // When resetting the counter, set STEPS_TAKEN_CORRECTION to zero
         // so that a new session would be started on next sensor event.
         setStepsCorrection(0)
-        upsertToday(getStepLength(), 0, 0)
+        upsertToday(today.value!!.copy(steps = 0, distance = 0))
     }
 
     fun getStepLength() = prefs.getInt(STEP_LENGTH, 0)
@@ -180,7 +176,8 @@ class Repository @Inject constructor(
                 putInt(STEP_LENGTH, length)
                 apply()
             }
-            upsertToday(length)
+            val distance = calculateDistance(today.value?.steps ?: 0, length)
+            upsertToday(today.value!!.copy(distance = distance))
         }
         stepLengthListener?.invoke(length)
     }
