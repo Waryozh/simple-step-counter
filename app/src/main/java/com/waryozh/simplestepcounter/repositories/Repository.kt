@@ -2,6 +2,7 @@ package com.waryozh.simplestepcounter.repositories
 
 import android.content.SharedPreferences
 import androidx.annotation.VisibleForTesting
+import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.waryozh.simplestepcounter.database.WalkDatabaseDao
@@ -81,7 +82,7 @@ class Repository @Inject constructor(
     fun getServiceRunning() = prefs.getBoolean(IS_RUNNING, false)
 
     fun setServiceRunning(isRunning: Boolean) {
-        with(prefs.edit()) {
+        prefs.edit {
             putBoolean(IS_RUNNING, isRunning)
             putBoolean(SHOULD_RUN, false)
             // Step Counter sensor records all steps taken since the last device reboot,
@@ -91,7 +92,6 @@ class Repository @Inject constructor(
             if (!isRunning && today.value != null) {
                 putInt(STEPS_ON_STOP, today.value!!.steps)
             }
-            apply()
         }
         stepCounterServiceRunningListener?.invoke(isRunning)
     }
@@ -99,16 +99,14 @@ class Repository @Inject constructor(
     fun getServiceShouldRun() = prefs.getBoolean(SHOULD_RUN, true)
 
     fun setServiceShouldRun(shouldRun: Boolean) {
-        with(prefs.edit()) {
+        prefs.edit {
             putBoolean(SHOULD_RUN, shouldRun)
-            apply()
         }
     }
 
     private fun setStepsCorrection(correction: Int) {
-        with(prefs.edit()) {
+        prefs.edit {
             putInt(STEPS_TAKEN_CORRECTION, correction)
-            apply()
         }
     }
 
@@ -146,10 +144,9 @@ class Repository @Inject constructor(
                     // so to ignore those steps, we recalculate the offset using STEPS_ON_STOP,
                     // which is the number of steps recorded on service stop.
                     correction = if (repoIsOutdated) correction + today.value!!.steps else steps - stepsOnStop
-                    with(prefs.edit()) {
+                    prefs.edit {
                         putInt(STEPS_ON_STOP, 0)
                         putInt(STEPS_TAKEN_CORRECTION, correction)
-                        apply()
                     }
                 }
             }
@@ -172,9 +169,8 @@ class Repository @Inject constructor(
     // Step length is stored in centimeters
     suspend fun setStepLength(length: Int) {
         withContext(Dispatchers.IO) {
-            with(prefs.edit()) {
+            prefs.edit {
                 putInt(STEP_LENGTH, length)
-                apply()
             }
             val distance = calculateDistance(today.value?.steps ?: 0, length)
             upsertToday(today.value!!.copy(distance = distance))

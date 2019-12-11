@@ -3,6 +3,7 @@ package com.waryozh.simplestepcounter
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.core.content.edit
 import androidx.test.core.app.ApplicationProvider
 import com.waryozh.simplestepcounter.database.WalkDatabase
 import com.waryozh.simplestepcounter.database.WalkDatabaseDao
@@ -52,25 +53,22 @@ abstract class BaseTest {
         // Since we are using fake temporary SharedPreferences for testing,
         // put some valid value into STEP_LENGTH before launching MainActivity
         // so that SetStepLengthDialog would not be shown.
-        with(prefs.edit()) {
+        prefs.edit {
             putInt(STEP_LENGTH, 1)
-            apply()
         }
     }
 
     @After
     fun tearDown() {
-        with(prefs.edit()) {
+        prefs.edit {
             clear()
-            apply()
         }
         db.close()
     }
 
     protected fun setPrefs(steps: Int, correction: Int) {
-        with(prefs.edit()) {
+        prefs.edit {
             putInt(STEPS_TAKEN_CORRECTION, correction)
-            apply()
         }
         runBlocking {
             val today = walkDao.getToday().getOrAwaitValue()
@@ -80,9 +78,8 @@ abstract class BaseTest {
     }
 
     protected fun setStepsCorrection(correction: Int) {
-        with(prefs.edit()) {
+        prefs.edit {
             putInt(STEPS_TAKEN_CORRECTION, correction)
-            apply()
         }
     }
 }
