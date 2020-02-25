@@ -47,7 +47,7 @@ class StepCounter : LifecycleService(), SensorEventListener {
     private val stepCounterJob = Job()
     private val stepCounterScope = CoroutineScope(Dispatchers.Main + stepCounterJob)
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
         (application as App).appComponent
